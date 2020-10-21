@@ -2,7 +2,6 @@ const path = require('path');
 const views = require('koa-views');
 const logger = require('koa-logger');
 const router = require('@koa/router')();
-const koaBody = require('koa-body');
 const bodyParser = require('koa-bodyparser');
 
 const Koa = require('koa');
@@ -13,7 +12,6 @@ app
   .use(views(path.join(__dirname, '/views'), { extension: 'ejs' }))
   .use(router.routes())
   .use(router.allowedMethods())
-  .use(koaBody())
 
 const posts = []
 
