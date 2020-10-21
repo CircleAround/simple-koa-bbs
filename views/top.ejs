@@ -1,0 +1,41 @@
+<html>
+
+<head>
+  <style>
+    .posts {
+      padding: 0;
+      list-style: none;
+    }
+
+    .post {
+      border: 1px solid gray;
+    }
+
+    .post .title {
+      background-color: lightblue;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>これはテストです</h1>
+  <%= test %>
+
+  <h1>New Post</h1>
+  <form action="/post" method="post">
+    <p><input type="text" placeholder="Title" name="title"></p>
+    <p><textarea placeholder="Contents" name="body"></textarea></p>
+    <p><input type="submit" value="Create"></p>
+  </form>
+
+  <ul class="posts">
+    <% posts.forEach((post)=>{ %>
+    <li class="post">
+      <div class="title"><%= post.title %></div>
+      <div class="body"><%= post.body %></div>
+    </li>
+    <% }) %>
+  </ul>
+</body>
+
+</html>
