@@ -4,8 +4,13 @@ const logger = require('koa-logger')
 const router = require('@koa/router')()
 const bodyParser = require('koa-bodyparser')
 
+const { DataTypes } = require('sequelize')
+const db = require('./models')
+const Post = require('./models/post')(db.sequelize, DataTypes)
+
 const Koa = require('koa')
 const app = new Koa()
+
 app
   .use(logger())
   .use(bodyParser())
@@ -13,9 +18,9 @@ app
   .use(router.routes())
   .use(router.allowedMethods())
 
-const posts = []
-
 const top = async ctx => {
+  const posts = await Post.findAll()
+
   await ctx.render('top', {
     test: new Date(),
     posts: posts
@@ -24,8 +29,9 @@ const top = async ctx => {
 
 const create = async ctx => {
   const post = ctx.request.body
-  post.created_at = new Date()
-  posts.push(post)
+  const entity = Post.build(post)
+  await entity.save()
+
   ctx.redirect('/')
 }
 

@@ -31,8 +31,11 @@
   <ul class="posts">
     <% posts.forEach((post)=>{ %>
     <li class="post">
-      <div class="title"><%= post.title %></div>
+      <div><%= post.id %></div>
+      <div class="title"><%= post.titleEx() %></div>
       <div class="body"><%= post.body %></div>
+      <div><%= post.createdAt %></div>
+      <div><%= post.updatedAt %></div>
     </li>
     <% }) %>
   </ul>
