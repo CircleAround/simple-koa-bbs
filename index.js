@@ -1,11 +1,11 @@
-const path = require('path');
-const views = require('koa-views');
-const logger = require('koa-logger');
-const router = require('@koa/router')();
-const bodyParser = require('koa-bodyparser');
+const path = require('path')
+const views = require('koa-views')
+const logger = require('koa-logger')
+const router = require('@koa/router')()
+const bodyParser = require('koa-bodyparser')
 
-const Koa = require('koa');
-const app = new Koa();
+const Koa = require('koa')
+const app = new Koa()
 app
   .use(logger())
   .use(bodyParser())
@@ -16,21 +16,21 @@ app
 const posts = []
 
 const top = async ctx => {
-  await ctx.render('top', { 
-    test: new Date(), 
+  await ctx.render('top', {
+    test: new Date(),
     posts: posts
   })
 }
 
 const create = async ctx => {
-  const post = ctx.request.body;
-  post.created_at = new Date();
+  const post = ctx.request.body
+  post.created_at = new Date()
   posts.push(post)
-  ctx.redirect('/');
+  ctx.redirect('/')
 }
 
 router
   .get('/', top)
-  .post('/post', create);
+  .post('/post', create)
 
-app.listen(3000);
+app.listen(3000)
