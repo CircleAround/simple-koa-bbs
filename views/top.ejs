@@ -2,9 +2,31 @@
 
 <head>
   <style>
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    ul.errors {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul.errors li {
+      font-weight: bold;
+      color: darkred;
+      background-color: lightpink;
+      padding: 2px 5px;
+    }
+
     .posts {
       padding: 0;
       list-style: none;
+    }
+
+    .posts li {
+      margin-bottom: 1em;
+      padding: .5em;
     }
 
     .post {
@@ -14,31 +36,52 @@
     .post .title {
       background-color: lightblue;
     }
+
+    .post .times {
+      font: small;
+      border-top: solid lightblue 1px;
+    }
   </style>
 </head>
 
 <body>
-  <h1>これはテストです</h1>
-  <%= test %>
+  <div class="container">
+    <h1>これはテストです</h1>
 
-  <h1>New Post</h1>
-  <form action="/post" method="post">
-    <p><input type="text" placeholder="Title" name="title"></p>
-    <p><textarea placeholder="Contents" name="body"></textarea></p>
-    <p><input type="submit" value="Create"></p>
-  </form>
+    <%= test %>
 
-  <ul class="posts">
-    <% posts.forEach((post)=>{ %>
-    <li class="post">
-      <div><%= post.id %></div>
-      <div class="title"><%= post.titleEx() %></div>
-      <div class="body"><%= post.body %></div>
-      <div><%= post.createdAt %></div>
-      <div><%= post.updatedAt %></div>
-    </li>
-    <% }) %>
-  </ul>
+    <h1>New Post</h1>
+    <% if(error) { %>
+    <ul class="errors">
+      <li>
+        <h3>入力エラーです</h3>
+      </li>
+      <% error.errors.forEach((errorItem)=>{ %>
+      <li><%= errorItem.message %></li>
+      <% }) %>
+    </ul>
+    <% } %>
+
+    <form action="/post" method="post">
+      <p><input type="text" placeholder="Title" name="title" value="<%= post.title %>"></p>
+      <p><textarea placeholder="Contents" name="body" value="<%= post.body %>"></textarea></p>
+      <p><input type="submit" value="Create"></p>
+    </form>
+
+    <ul class="posts">
+      <% posts.forEach((post)=>{ %>
+      <li class="post">
+        <div><%= post.id %></div>
+        <div class="title"><%= post.title %>[<%= post.titleLength() %>]</div>
+        <div class="body"><%= post.body %></div>
+        <div class="times">
+          <div>作成日時: <%= post.createdAt %></div>
+          <div>更新日時:<%= post.updatedAt %></div>
+        </div>
+      </li>
+      <% }) %>
+    </ul>
+  </div>
 </body>
 
 </html>

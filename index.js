@@ -4,7 +4,7 @@ const logger = require('koa-logger')
 const router = require('@koa/router')()
 const bodyParser = require('koa-bodyparser')
 
-const { DataTypes } = require('sequelize')
+const { ValidationError, DataTypes } = require('sequelize')
 const db = require('./models')
 const Post = require('./models/post')(db.sequelize, DataTypes)
 
@@ -18,21 +18,34 @@ app
   .use(router.routes())
   .use(router.allowedMethods())
 
-const top = async ctx => {
-  const posts = await Post.findAll()
-
+async function renderTop(ctx, post, error = null) {
+  const posts = await Post.newest()  
   await ctx.render('top', {
+    error: error,
     test: new Date(),
-    posts: posts
+    posts: posts,
+    post: post
   })
+}  
+
+const top = async ctx => {
+  return renderTop(ctx, Post.build())
 }
 
 const create = async ctx => {
   const post = ctx.request.body
   const entity = Post.build(post)
-  await entity.save()
+  try {
+    await entity.save()
+    ctx.redirect('/')
+  } catch (e) {
+    if(e instanceof ValidationError) {
+      console.log(e)
+      return renderTop(ctx, entity, e)
+    }
 
-  ctx.redirect('/')
+    throw e
+  }
 }
 
 router

@@ -13,13 +13,30 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
 
-    titleEx() {
-      return `${this.title}(関数で追加のテスト)`
+    // モデルへのstatic関数追加の確認
+    static async newest() {
+      return await Post.findAll({ order: [['createdAt', 'DESC']], limit: 5 })
+    }
+
+    titleLength() {
+      return this.title.length // モデルへの関数追加の確認
     }
   };
   Post.init({
-    title: DataTypes.STRING,
-    body: DataTypes.TEXT
+    title: { 
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
+    },
+    body: { 
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
+    }
   }, {
     sequelize,
     modelName: 'Post',
