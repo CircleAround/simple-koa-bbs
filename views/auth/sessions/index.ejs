@@ -1,0 +1,11 @@
+<%- include('../../shared/header') %>
+<div>
+  <h2>ログイン</h2>
+  <%- include('../../shared/validation_panel', {error}) %>
+  <form action="/sessions" method="post">
+    <input type="email" name="email" value="<%=params.email%>">
+    <input type="password" name="password">
+    <input type="submit" value="ログイン">
+  </form>
+</div>
+<%- include('../../shared/footer') %>

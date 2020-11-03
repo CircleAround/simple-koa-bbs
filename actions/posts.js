@@ -1,6 +1,6 @@
-const { ValidationError, DataTypes } = require('sequelize')
+const { ValidationError } = require('sequelize')
 const db = require('../models')
-const Post = require('../models/post')(db.sequelize, DataTypes)
+const Post = db.Post
 
 async function renderTop(ctx, post, error = null) {
   const posts = await Post.newest()  
