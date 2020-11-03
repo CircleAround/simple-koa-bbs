@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+<<<<<<< HEAD
       this.posts = this.hasMany(models.post)
     }
 
@@ -23,6 +24,14 @@ module.exports = (sequelize, DataTypes) => {
     static async register({ nickName, email, password }) {
       const passwordHash = this.generateHash(password)
       const user = this.build({nickName, email, password, passwordHash})
+=======
+      // define association here
+    }
+
+    static async register({ email, password }) {
+      const passwordHash = await bcrypt.hash(password, 10)
+      const user = this.build({email, password, passwordHash})
+>>>>>>> signup and login
       await user.save()
       return user
     }
@@ -52,6 +61,7 @@ module.exports = (sequelize, DataTypes) => {
         isEmail: true
       }
     },
+<<<<<<< HEAD
     nickName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -59,6 +69,8 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true
       }
     },
+=======
+>>>>>>> signup and login
     passwordHash: {
       type: DataTypes.TEXT,
       allowNull: false
@@ -71,7 +83,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
+<<<<<<< HEAD
     modelName: 'user',
+=======
+    modelName: 'User',
+>>>>>>> signup and login
   });
   return User;
 };

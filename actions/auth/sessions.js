@@ -1,7 +1,10 @@
 const {DataTypes, ValidationError} = require('sequelize')
 const db = require('../../models/')
 const Authenticator = require('../../models/user/authenticator')(db.sequelize, DataTypes)
+<<<<<<< HEAD
 const User = db.user
+=======
+>>>>>>> signup and login
 
 const renderIndex = async (ctx, params = {}, error = null) => {
   await ctx.render('auth/sessions/index', { params, error })
@@ -17,9 +20,12 @@ const create = async ctx => {
   try {
     const authenticator = Authenticator.build(params)
     const user = await authenticator.save()
+<<<<<<< HEAD
     await ctx.regenerateSession()
     ctx.session.userId = user.id
     ctx.flash = { info: 'ログイン成功しました' }
+=======
+>>>>>>> signup and login
     ctx.redirect('/')
   } catch (e) {
     if(e instanceof ValidationError) {
@@ -31,6 +37,7 @@ const create = async ctx => {
   }
 }
 
+<<<<<<< HEAD
 const show = async ctx => {
   await ctx.render('auth/sessions/show')
 }
@@ -57,3 +64,6 @@ const currentUser = async (ctx, next) => {
 }
 
 module.exports = { index, show, create, destroy, currentUser }
+=======
+module.exports = { index, create }
+>>>>>>> signup and login

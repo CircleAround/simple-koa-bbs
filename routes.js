@@ -4,6 +4,7 @@ const sessions = require('./actions/auth/sessions')
 
 module.exports = function routes(router) {
   router
+<<<<<<< HEAD
     .use(sessions.currentUser)
 
   router
@@ -14,6 +15,13 @@ module.exports = function routes(router) {
     .delete('/sessions', sessions.destroy)
     .post('/sessions', sessions.create)
     
+=======
+    .get('/signup', accounts.index)
+    .post('/accounts', accounts.create)
+    .get('/login', sessions.index)
+    .post('/sessions', sessions.create)
+
+>>>>>>> signup and login
   router
     .get('/', posts.index)
     .post('/post', posts.create)

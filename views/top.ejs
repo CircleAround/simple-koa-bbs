@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <% include shared/header %>
 
 <% if(currentUser) { %>
@@ -12,12 +13,25 @@
 <% } else { %>
   ログインすると投稿できます
 <% } %>
+=======
+<%- include('shared/header') %>
+<h2>新規投稿</h2>
+
+<%- include('shared/validation_panel', {error}) %>
+
+<form action="/post" method="post">
+  <p><input type="text" placeholder="Title" name="title" value="<%= post.title %>"></p>
+  <p><textarea placeholder="Contents" name="body" value="<%= post.body %>"></textarea></p>
+  <p><input type="submit" value="Create"></p>
+</form>
+>>>>>>> signup and login
 
 <div>
   現在時刻: <%= test %>
 </div>
 
 <h2>最新の投稿</h2>
+<<<<<<< HEAD
 <div>
   タイトルで絞り込み検索 : 
   <form action="/">
@@ -26,6 +40,8 @@
   </form>
 </div>
 
+=======
+>>>>>>> signup and login
 <ul class="posts">
   <% posts.forEach((post)=>{ %>
   <li class="post">
@@ -39,9 +55,16 @@
     <div class="times">
       <div>作成日時: <%= post.createdAt %></div>
       <div>更新日時: <%= post.updatedAt %></div>
+<<<<<<< HEAD
       <div>ニックネーム: <%= post.user.nickName %></div>
+=======
+>>>>>>> signup and login
     </div>
   </li>
   <% }) %>
 </ul>
+<<<<<<< HEAD
 <% include shared/footer %>
+=======
+<%- include('shared/footer') %>
+>>>>>>> signup and login
