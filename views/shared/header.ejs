@@ -42,10 +42,35 @@
       font: small;
       border-top: solid lightblue 1px;
     }
+
+    .flash.info {
+      color: darkgreen;
+      background-color: lightgreen;
+    }
+
+    .flash.error {
+      color: darkred;
+      background-color: lightpink;
+    }
+
+    .user {
+      text-align: right;
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
     <h1>簡単な掲示板</h1>
+    <% if(currentUser) { %>
+      <div class="user">
+        user: <%= currentUser.email %>
+      </div>
+    <% } %>
+
+    <% if(flash) { %>
+      <% for(const [key, message] of Object.entries(flash)) { %>
+        <div class="flash <%= key %>"><%= message %></div>
+      <% } %>
+    <% } %>
     

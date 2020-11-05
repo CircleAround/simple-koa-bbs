@@ -3,13 +3,32 @@ const views = require('koa-views')
 const logger = require('koa-logger')
 const router = require('@koa/router')()
 const bodyParser = require('koa-bodyparser')
+const session = require('koa-generic-session')
+const redisStore = require('koa-redis')
+const flash = require('koa-flash')
 
-const routes = require('./routes')
+const result = require('dotenv').config()
+if (result.error) {
+  throw result.error
+}
 
 const Koa = require('koa')
 const app = new Koa()
+const routes = require('./routes')
+
+app.keys = [process.env['SESSION_KEY']]
 
 app
+  .use(session({
+    key: 'simple.bbs.session', 
+    prefix: 'simplebbs:sessions:',
+    store: redisStore()
+  }))
+  .use(flash())
+  .use((ctx, next) => { 
+    ctx.state.flash = ctx.flash || {}
+    return next()
+  })
   .use(logger())
   .use(bodyParser())
   .use(views(path.join(__dirname, '/views'), { extension: 'ejs' }))

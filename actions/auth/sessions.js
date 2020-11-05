@@ -16,6 +16,9 @@ const create = async ctx => {
   try {
     const authenticator = Authenticator.build(params)
     const user = await authenticator.save()
+    await ctx.regenerateSession()
+    ctx.session.userId = user.id
+    ctx.flash = { info: 'ログイン成功しました' }
     ctx.redirect('/')
   } catch (e) {
     if(e instanceof ValidationError) {
@@ -27,4 +30,11 @@ const create = async ctx => {
   }
 }
 
-module.exports = { index, create }
+const currentUser = async (ctx, next) => {
+  if(ctx.session.userId) {
+    ctx.state.currentUser = await db.User.findByPk(ctx.session.userId)
+  }
+  return next()
+}
+
+module.exports = { index, create, currentUser }

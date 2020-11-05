@@ -4,6 +4,9 @@ const sessions = require('./actions/auth/sessions')
 
 module.exports = function routes(router) {
   router
+    .use(sessions.currentUser)
+
+  router
     .get('/signup', accounts.index)
     .post('/accounts', accounts.create)
     .get('/login', sessions.index)

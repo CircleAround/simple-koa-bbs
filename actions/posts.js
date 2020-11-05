@@ -2,18 +2,18 @@ const { ValidationError } = require('sequelize')
 const db = require('../models')
 const Post = db.Post
 
-async function renderTop(ctx, post, error = null) {
+async function renderTop(ctx, post = {}, error = null) {
   const posts = await Post.newest()  
   await ctx.render('top', {
     error: error,
     test: new Date(),
     posts: posts,
-    post: post
+    post: post,
   })
 }  
 
 const index = async ctx => {
-  return renderTop(ctx, Post.build())
+  return renderTop(ctx)
 }
 
 const create = async ctx => {
