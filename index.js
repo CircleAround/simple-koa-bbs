@@ -5,6 +5,7 @@ const router = require('@koa/router')()
 const bodyParser = require('koa-bodyparser')
 const session = require('koa-generic-session')
 const redisStore = require('koa-redis')
+const convert = require('koa-convert')
 const flash = require('koa-flash')
 
 const result = require('dotenv').config()
@@ -18,7 +19,12 @@ const routes = require('./routes')
 
 app.keys = [process.env['SESSION_KEY']]
 
+// for legacy type middleware
+const _use = app.use
+app.use = x => _use.call(app, convert(x))
+
 app
+  .use(logger())
   .use(session({
     key: 'simple.bbs.session', 
     prefix: 'simplebbs:sessions:',
@@ -29,11 +35,25 @@ app
     ctx.state.flash = ctx.flash || {}
     return next()
   })
-  .use(logger())
   .use(bodyParser())
   .use(views(path.join(__dirname, '/views'), { extension: 'ejs' }))
   .use(router.routes())
   .use(router.allowedMethods())
+
+// @see https://github.com/koajs/koa/wiki/Error-Handling
+app.use(async (ctx, next) => {
+  try {
+    await next()
+  } catch (err) {
+    ctx.status = err.status || 500
+    ctx.body = err.message
+    ctx.app.emit('fatal error', err, ctx)
+  }
+})
+
+app.on('error', (err, ctx) => {
+  // TODO: あとで実装する
+})
 
 routes(router)
 
