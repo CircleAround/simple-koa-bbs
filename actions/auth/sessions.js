@@ -30,11 +30,25 @@ const create = async ctx => {
   }
 }
 
+const destroy = async (ctx, next) => {
+  const currentUser = ctx.currentUser
+  if(currentUser) {
+    await currentUser.destroy()
+  }
+
+  ctx.session = {};
+  await ctx.regenerateSession();
+  ctx.flash = { info: 'ログアウトしました' }
+  ctx.redirect('/login')
+}
+
 const currentUser = async (ctx, next) => {
   if(ctx.session.userId) {
     ctx.state.currentUser = await db.User.findByPk(ctx.session.userId)
+  } else {
+    ctx.state.currentUser = null
   }
   return next()
 }
 
-module.exports = { index, create, currentUser }
+module.exports = { index, create, destroy, currentUser }

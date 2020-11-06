@@ -45,6 +45,8 @@ app.use(async (ctx, next) => {
   try {
     await next()
   } catch (err) {
+    console.error(err.message)
+    console.trace()
     ctx.status = err.status || 500
     ctx.body = err.message
     ctx.app.emit('fatal error', err, ctx)
@@ -53,6 +55,8 @@ app.use(async (ctx, next) => {
 
 app.on('error', (err, ctx) => {
   // TODO: あとで実装する
+  console.error(err.message)
+  console.trace()
 })
 
 routes(router)

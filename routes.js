@@ -11,6 +11,7 @@ module.exports = function routes(router) {
     .post('/accounts', accounts.create)
     .get('/login', sessions.index)
     .post('/sessions', sessions.create)
+    .get('/logout', sessions.destroy)
 
   router
     .get('/', posts.index)

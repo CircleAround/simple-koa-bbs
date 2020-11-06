@@ -61,12 +61,15 @@
 
 <body>
   <div class="container">
-    <h1>簡単な掲示板</h1>
-    <% if(currentUser) { %>
-      <div class="user">
-        user: <%= currentUser.email %>
-      </div>
-    <% } %>
+    <h1><a href="/">簡単な掲示板</a></h1>
+    <div class="user">
+      <% if(currentUser) { %>
+        user: <%= currentUser.email %> <a href="/logout">ログアウト</a>
+      <% } else { %> 
+        <a href="/login">ログイン</a>
+        <a href="/signup">新規ユーザー登録</a>
+      <% } %>
+    </div>
 
     <% if(flash) { %>
       <% for(const [key, message] of Object.entries(flash)) { %>
