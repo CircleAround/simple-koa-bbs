@@ -10,9 +10,9 @@ module.exports = function routes(router) {
     .get('/signup', accounts.index)
     .post('/accounts', accounts.create)
     .get('/login', sessions.index)
+    .delete('/sessions', sessions.destroy)
     .post('/sessions', sessions.create)
-    .get('/logout', sessions.destroy)
-
+    
   router
     .get('/', posts.index)
     .post('/post', posts.create)

@@ -1,7 +1,6 @@
 <html>
-<meta charset="UTF8"></meta>
-
 <head>
+  <meta charset="UTF8"></meta>
   <style>
     .container {
       max-width: 960px;
@@ -57,6 +56,9 @@
       text-align: right;
     }
   </style>
+
+  <script src="/js/restful_links.js"></script>
+  <script>restfulLinks()</script>
 </head>
 
 <body>
@@ -64,7 +66,7 @@
     <h1><a href="/">簡単な掲示板</a></h1>
     <div class="user">
       <% if(currentUser) { %>
-        user: <%= currentUser.email %> <a href="/logout">ログアウト</a>
+        user: <%= currentUser.email %> <a data-method="delete" href="/sessions">ログアウト</a>
       <% } else { %> 
         <a href="/login">ログイン</a>
         <a href="/signup">新規ユーザー登録</a>

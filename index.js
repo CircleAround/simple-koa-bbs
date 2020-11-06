@@ -7,6 +7,7 @@ const session = require('koa-generic-session')
 const redisStore = require('koa-redis')
 const convert = require('koa-convert')
 const flash = require('koa-flash')
+const override = require('koa-override')
 
 const result = require('dotenv').config()
 if (result.error) {
@@ -25,6 +26,7 @@ app.use = x => _use.call(app, convert(x))
 
 app
   .use(logger())
+  .use(require('koa-static')(path.join(__dirname, 'public')))
   .use(session({
     key: 'simple.bbs.session', 
     prefix: 'simplebbs:sessions:',
@@ -36,7 +38,8 @@ app
     return next()
   })
   .use(bodyParser())
-  .use(views(path.join(__dirname, '/views'), { extension: 'ejs' }))
+  .use(override())  
+  .use(views(path.join(__dirname, 'views'), { extension: 'ejs' }))
   .use(router.routes())
   .use(router.allowedMethods())
 
