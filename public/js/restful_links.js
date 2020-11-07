@@ -3,7 +3,7 @@
 1. Server accept as `method-override`(ex. koa-override).
 2. read scripts
 3. run restfulLinks()
-4. write `<a data-method="[name of method as lower case string]"></a>`
+4. write `<a data-method="[name of method as lower case string]" href="[path to post]"></a>`
 
 [example]
 ```
@@ -12,13 +12,14 @@
   <script>restfulLinks()</script>
 </head>
 <body
-  <a data-method="delete">This is delete for method-override</a>
+  <a data-method="delete" href="/test">This is delete for method-override</a>
 </body>
 ```
 */
 function restfulLinks(auto = true) {
   function requestAsForm(anchor) {
-    requestDynamicForm(anchor.getAttribute('href'), anchor.getAttribute('data-method'))
+    const form = createForm(anchor.getAttribute('href'), anchor.getAttribute('data-method'))
+    form.submit()
   }
 
   function addHidden(form, name, value) {
@@ -29,7 +30,7 @@ function restfulLinks(auto = true) {
     form.appendChild(hidden)
   }
 
-  function requestDynamicForm(action, method) {
+  function createForm(action, method) {
     const form = document.createElement('form')
     form.action = action
     form.method = 'POST'
@@ -37,7 +38,7 @@ function restfulLinks(auto = true) {
     addHidden(form, '_method', method)
 
     document.body.appendChild(form)
-    form.submit()
+    return form
   }
 
   function applyToAnchor(anchor) {
