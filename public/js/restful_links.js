@@ -16,26 +16,41 @@
 </body>
 ```
 */
-function restfulLinks(auto = true) {
-  function requestAsForm(anchor) {
-    const form = createForm(anchor.getAttribute('href'), anchor.getAttribute('data-method'))
-    form.submit()
+function restfulLinks(options = {}) {
+  const auto = options.auto || true
+  const anchorMethodAttr = options.anchorMethodAttr || 'data-method'
+  const overrideMethodKey = options.overrideMethodKey || '_method'
+  const methods = options.methods || ['put', 'patch', 'delete']
+  const csrfTokenKey = options.csrfTokenKey || 'authenticity_token'
+
+  const putParamsToForm = options.putParamsToForm || function(context) {
+    context.addHidden(overrideMethodKey, context.method)
+
+    const meta = document.querySelector('meta[name=csrf-token]')
+    if(meta) { 
+      context.addHidden(csrfTokenKey, meta.getAttribute('content'))
+    }
   }
 
-  function addHidden(form, name, value) {
-    const hidden = document.createElement('input')
-    hidden.type = 'hidden'
-    hidden.name = name
-    hidden.value = value
-    form.appendChild(hidden)
+  function requestAsForm(anchor) {
+    const form = createForm(anchor.getAttribute('href'), anchor.getAttribute(anchorMethodAttr))
+    form.submit()
   }
 
   function createForm(action, method) {
     const form = document.createElement('form')
     form.action = action
-    form.method = 'POST'
+    form.method = 'post'
 
-    addHidden(form, '_method', method)
+    function addHidden(name, value) {
+      const hidden = document.createElement('input')
+      hidden.type = 'hidden'
+      hidden.name = name
+      hidden.value = value
+      this.form.appendChild(hidden)
+    }
+
+    putParamsToForm({ form, method, addHidden })
 
     document.body.appendChild(form)
     return form
@@ -49,9 +64,7 @@ function restfulLinks(auto = true) {
   }
 
   function applyAll() {
-    const methods = ['put', 'patch', 'delete']
-    const selector = methods.map((method)=>{ return `a[data-method=${method}]` }).join(',')
-  
+    const selector = methods.map((method)=>{ return `a[${anchorMethodAttr}=${method}]` }).join(',')
     for(const node of document.querySelectorAll(selector)) {
       applyToAnchor(node)
     }
@@ -69,6 +82,7 @@ function restfulLinks(auto = true) {
     applyOnDOMContentLoaded,
     applyAll,
     applyToAnchor,
+    createForm,
     requestAsForm
   }
 }
