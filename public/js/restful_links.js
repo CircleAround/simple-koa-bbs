@@ -21,14 +21,14 @@ function restfulLinks(options = {}) {
   const anchorMethodAttr = options.anchorMethodAttr || 'data-method'
   const overrideMethodKey = options.overrideMethodKey || '_method'
   const methods = options.methods || ['put', 'patch', 'delete']
-  const csrfTokenKey = options.csrfTokenKey || 'authenticity_token'
+  const csrfTokenKey = options.csrfTokenKey || '_token'
 
   const putParamsToForm = options.putParamsToForm || function(context) {
     context.addHidden(overrideMethodKey, context.method)
 
     const meta = document.querySelector('meta[name=csrf-token]')
     if(meta) { 
-      context.addHidden(csrfTokenKey, meta.getAttribute('content'))
+      context.addHidden(csrfTokenKey, meta.getAttribute('context'))
     }
   }
 

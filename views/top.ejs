@@ -4,6 +4,7 @@
 <%- include('shared/validation_panel', {error}) %>
 
 <form action="/post" method="post">
+  <%- csrfTag() %>
   <p><input type="text" placeholder="Title" name="title" value="<%= post.title %>"></p>
   <p><textarea placeholder="Contents" name="body" value="<%= post.body %>"></textarea></p>
   <p><input type="submit" value="Create"></p>

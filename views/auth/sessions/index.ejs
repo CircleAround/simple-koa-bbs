@@ -3,6 +3,7 @@
   <h2>ログイン</h2>
   <%- include('../../shared/validation_panel', {error}) %>
   <form action="/sessions" method="post">
+    <%- csrfTag() %>
     <input type="email" name="email" value="<%=params.email%>">
     <input type="password" name="password">
     <input type="submit" value="ログイン">

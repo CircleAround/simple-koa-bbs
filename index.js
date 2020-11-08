@@ -24,6 +24,20 @@ app.keys = [process.env['SESSION_KEY']]
 const _use = app.use
 app.use = x => _use.call(app, convert(x))
 
+const csrfToken = async (ctx, next) => { 
+  const key = '_token'
+  ctx.state.csrfToken = ctx.sessionId
+  ctx.state.csrfTag = () => `<input type="hidden" name="${key}" value="${ctx.sessionId}" />`
+
+  if(['POST', 'PUT', 'DELETE'].includes(ctx.method)) { 
+    if(ctx.request.body[key] != ctx.sessionId) {
+      ctx.throw(403, 'CSRF Token mismatch')
+      return
+    }
+  }
+  await next()
+}
+
 app
   .use(logger())
   .use(require('koa-static')(path.join(__dirname, 'public')))
@@ -33,13 +47,14 @@ app
     store: redisStore()
   }))
   .use(flash())
-  .use((ctx, next) => { 
+  .use(async (ctx, next) => { 
     ctx.state.flash = ctx.flash || {}
-    return next()
+    await next()
   })
   .use(bodyParser())
   .use(override())  
   .use(views(path.join(__dirname, 'views'), { extension: 'ejs' }))
+  .use(csrfToken)
   .use(router.routes())
   .use(router.allowedMethods())
 
