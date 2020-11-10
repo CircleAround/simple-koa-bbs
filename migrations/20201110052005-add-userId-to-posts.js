@@ -4,16 +4,16 @@ const fkName = 'userId_Posts_fk'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('Posts', 'userId', { 
+    await queryInterface.addColumn('posts', 'userId', { 
       type: Sequelize.INTEGER,
       allowNull: false
     })
-    await queryInterface.addConstraint('Posts', { 
+    await queryInterface.addConstraint('posts', { 
       fields: ['userId'], 
       type: 'foreign key',
       name: fkName,
       references: {
-        table: 'Users',
+        table: 'users',
         field: 'id'
       },
       onDelete: 'cascade'
@@ -21,8 +21,8 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeConstraint('Posts', fkName)
-    await queryInterface.removeIndex('Posts', fkName)
-    await queryInterface.removeColumn('Posts', 'userId')
+    await queryInterface.removeConstraint('posts', fkName)
+    await queryInterface.removeIndex('posts', fkName)
+    await queryInterface.removeColumn('posts', 'userId')
   }
 };

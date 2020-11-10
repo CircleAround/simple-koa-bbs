@@ -1,7 +1,7 @@
-<%- include('../../shared/header') %>
+<% include ../../shared/header %>
 <div>
   <h2>新規ユーザー登録</h2>
-  <%- include('../../shared/validation_panel', {error}) %>
+  <% include ../../shared/validation_panel {error} %>
   <form action="/accounts" method="post">
     <%- csrfTag() %>
     <input type="email" name="email" value="<%= params.email %>">
@@ -9,4 +9,4 @@
     <input type="submit" value="ユーザー登録">
   </form>
 </div>
-<%- include('../../shared/footer') %>
+<% include ../../shared/footer %>

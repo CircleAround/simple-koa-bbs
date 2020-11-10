@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.posts = this.hasMany(models.Post, {foreignKey: 'userId'})
+      this.posts = this.hasMany(models.post)
     }
 
     static async register({ email, password }) {
@@ -60,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'User',
+    modelName: 'user',
   });
   return User;
 };

@@ -1,5 +1,6 @@
 const { ValidationError } = require('sequelize')
 const db = require('../../models')
+const User = db.user
 
 const renderIndex = async (ctx, params, error = null) => {
   await ctx.render('auth/accounts/index', { params, error })
@@ -13,7 +14,7 @@ const create = async ctx => {
   const { email, password } = ctx.request.body
   const params = { email, password }
   try {
-    const user = await db.User.register(params)
+    const user = await User.register(params)
     ctx.redirect('/login')
   } catch (e) {
     if(e instanceof ValidationError) {

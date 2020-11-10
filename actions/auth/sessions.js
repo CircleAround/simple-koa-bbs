@@ -1,6 +1,7 @@
 const {DataTypes, ValidationError} = require('sequelize')
 const db = require('../../models/')
 const Authenticator = require('../../models/user/authenticator')(db.sequelize, DataTypes)
+const User = db.user
 
 const renderIndex = async (ctx, params = {}, error = null) => {
   await ctx.render('auth/sessions/index', { params, error })
@@ -44,7 +45,7 @@ const destroy = async (ctx, next) => {
 
 const currentUser = async (ctx, next) => {
   if(ctx.session.userId) {
-    ctx.state.currentUser = await db.User.findByPk(ctx.session.userId)
+    ctx.state.currentUser = await User.findByPk(ctx.session.userId)
   } else {
     ctx.state.currentUser = null
   }
