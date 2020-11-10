@@ -26,6 +26,10 @@ app.use = x => _use.call(app, convert(x))
 
 const csrfToken = async (ctx, next) => { 
   const key = '_token'
+   
+  // データが全く無いとIDが毎回変わるのでログインに失敗する為
+  ctx.session.accessedAt = new Date()
+
   ctx.state.csrfToken = ctx.sessionId
   ctx.state.csrfTag = () => `<input type="hidden" name="${key}" value="${ctx.sessionId}" />`
 
