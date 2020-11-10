@@ -1,5 +1,5 @@
 const path = require('path')
-const views = require('koa-views')
+const views = require('koa-ejs')
 const logger = require('koa-logger')
 const router = require('@koa/router')()
 const bodyParser = require('koa-bodyparser')
@@ -42,6 +42,15 @@ const csrfToken = async (ctx, next) => {
   await next()
 }
 
+views(app, {
+  root: path.join(__dirname, 'views'),
+  viewExt: 'ejs',
+  layout: false,
+  cache: false,
+  // debug: true,
+  async: true
+})
+
 app
   .use(logger())
   .use(require('koa-static')(path.join(__dirname, 'public')))
@@ -57,7 +66,6 @@ app
   })
   .use(bodyParser())
   .use(override())  
-  .use(views(path.join(__dirname, 'views'), { extension: 'ejs' }))
   .use(csrfToken)
   .use(router.routes())
   .use(router.allowedMethods())

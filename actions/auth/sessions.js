@@ -48,7 +48,7 @@ const currentUser = async (ctx, next) => {
   } else {
     ctx.state.currentUser = null
   }
-  return next()
+  await next()
 }
 
 module.exports = { index, create, destroy, currentUser }

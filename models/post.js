@@ -10,12 +10,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.user = this.belongsTo(models.User, {foreignKey: 'userId'})
     }
 
     // モデルへのstatic関数追加の確認
     static async newest() {
-      return await Post.findAll({ order: [['createdAt', 'DESC']], limit: 5 })
+      return await Post.findAll({ order: [['createdAt', 'DESC']], limit: 5, include: 'User' })
     }
 
     titleLength() {
@@ -32,6 +32,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     body: { 
       type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
+    },
+    userId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notEmpty: true

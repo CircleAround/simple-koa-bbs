@@ -1,7 +1,7 @@
-<%- include('shared/header') %>
+<% include shared/header %>
 <h2>新規投稿</h2>
 
-<%- include('shared/validation_panel', {error}) %>
+<% include shared/validation_panel {error} %>
 
 <form action="/post" method="post">
   <%- csrfTag() %>
@@ -28,8 +28,9 @@
     <div class="times">
       <div>作成日時: <%= post.createdAt %></div>
       <div>更新日時: <%= post.updatedAt %></div>
+      <div>user: <%= post.User.email %></div>
     </div>
   </li>
   <% }) %>
 </ul>
-<%- include('shared/footer') %>
+<% include shared/footer %>

@@ -1,0 +1,14 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "simplebbs_development",
+      "database": "simplebbs_development",
+      "username": "ms2sato",
+      "password": ""
+    }
+  ]
+}

@@ -13,11 +13,11 @@ async function renderTop(ctx, post = {}, error = null) {
 }  
 
 const index = async ctx => {
-  return renderTop(ctx)
+  return await renderTop(ctx)
 }
 
 const create = async ctx => {
-  const post = ctx.request.body
+  const post = { userId: ctx.state.currentUser.id, ...ctx.request.body }
   const entity = Post.build(post)
   try {
     await entity.save()
