@@ -1,7 +1,7 @@
 
 const { ValidationError, DataTypes } = require('sequelize')
 const db = require('./models')
-const Post = require('./models/post')(db.sequelize, DataTypes)
+const Post = db.post
 
 module.exports = function routes(router) {
   async function renderTop(ctx, post, error = null) {
