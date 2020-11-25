@@ -4,8 +4,13 @@ const logger = require('koa-logger')
 const router = require('@koa/router')()
 const bodyParser = require('koa-bodyparser')
 
+const { ValidationError, DataTypes } = require('sequelize')
+const db = require('./models')
+const Post = require('./models/post')(db.sequelize, DataTypes)
+
 const Koa = require('koa')
 const app = new Koa()
+
 app
   .use(logger())
   .use(bodyParser())
@@ -13,20 +18,34 @@ app
   .use(router.routes())
   .use(router.allowedMethods())
 
-const posts = []
+async function renderTop(ctx, post, error = null) {
+  const posts = await Post.newest()  
+  await ctx.render('top', {
+    error: error,
+    test: new Date(),
+    posts: posts,
+    post: post
+  })
+}  
 
 const top = async ctx => {
-  await ctx.render('top', {
-    test: new Date(),
-    posts: posts
-  })
+  return renderTop(ctx, Post.build())
 }
 
 const create = async ctx => {
   const post = ctx.request.body
-  post.created_at = new Date()
-  posts.push(post)
-  ctx.redirect('/')
+  const entity = Post.build(post)
+  try {
+    await entity.save()
+    ctx.redirect('/')
+  } catch (e) {
+    if(e instanceof ValidationError) {
+      console.log(e)
+      return renderTop(ctx, entity, e)
+    }
+
+    throw e
+  }
 }
 
 router
@@ -34,3 +53,10 @@ router
   .post('/post', create)
 
 app.listen(3000)
+
+
+/*
+・このアプリケーションの作りに依存している？もう少し汎用的ではないか？
+・変更される理由やタイミング、頻度について考える。
+・一緒に変更されそうなものが一緒になっている
+*/
