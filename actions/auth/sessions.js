@@ -31,6 +31,10 @@ const create = async ctx => {
   }
 }
 
+const show = async ctx => {
+  await ctx.render('auth/sessions/show')
+}
+
 const destroy = async (ctx, next) => {
   const currentUser = ctx.currentUser
   if(currentUser) {
@@ -52,4 +56,4 @@ const currentUser = async (ctx, next) => {
   await next()
 }
 
-module.exports = { index, create, destroy, currentUser }
+module.exports = { index, show, create, destroy, currentUser }

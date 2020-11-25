@@ -67,7 +67,7 @@
     <h1><a href="/">簡単な掲示板</a></h1>
     <div class="user">
       <% if(currentUser) { %>
-        user: <%= currentUser.email %> <a data-method="delete" href="/sessions">ログアウト</a>
+        user: <%= currentUser.email %> <a href="/profile">プロフィール</a> <a data-method="delete" href="/sessions">ログアウト</a>
       <% } else { %> 
         <a href="/login">ログイン</a>
         <a href="/signup">新規ユーザー登録</a>
