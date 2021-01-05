@@ -1,14 +1,17 @@
 <% include shared/header %>
-<h2>新規投稿</h2>
 
-<% include shared/validation_panel {error} %>
-
-<form action="/post" method="post">
-  <%- csrfTag() %>
-  <p><input type="text" placeholder="Title" name="title" value="<%= post.title %>"></p>
-  <p><textarea placeholder="Contents" name="body" value="<%= post.body %>"></textarea></p>
-  <p><input type="submit" value="Create"></p>
-</form>
+<% if(currentUser) { %>
+  <h2>新規投稿</h2>
+  <% include shared/validation_panel {error} %>
+  <form action="/post" method="post">
+    <%- csrfTag() %>
+    <p><input type="text" placeholder="Title" name="title" value="<%= post.title %>"></p>
+    <p><textarea placeholder="Contents" name="body" value="<%= post.body %>"></textarea></p>
+    <p><input type="submit" value="Create"></p>
+  </form>
+<% } else { %>
+  ログインすると投稿できます
+<% } %>
 
 <div>
   現在時刻: <%= test %>
