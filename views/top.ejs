@@ -15,6 +15,14 @@
 </div>
 
 <h2>最新の投稿</h2>
+<div>
+  タイトルで絞り込み検索 : 
+  <form action="/">
+    <input type="text" name="title" plaeholder="Title">
+    <input type="submit" value="検索">
+  </form>
+</div>
+
 <ul class="posts">
   <% posts.forEach((post)=>{ %>
   <li class="post">

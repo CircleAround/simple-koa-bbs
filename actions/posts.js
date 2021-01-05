@@ -3,7 +3,9 @@ const db = require('../models')
 const Post = db.post
 
 async function renderTop(ctx, post = {}, error = null) {
-  const posts = await Post.newest()  
+  const query = ctx.request.query
+  const title = query.title
+  const posts = await Post.newest(title ? { title } : {})  
   await ctx.render('top', {
     error: error,
     test: new Date(),
