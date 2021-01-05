@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
     static async newest(where = {}) {
       // return await Post.findAll({ where, order: [['createdAt', 'DESC']], limit: 5, include: 'user' })
 
+      // const query = `SELECT title, body, "createdAt", "updatedAt" FROM posts WHERE title=$1`
+      // return await sequelize.query(query, { model: Post, bind: [where.title] })
+
+      // !!
       const queryPost = 'SELECT title, body, "createdAt", "updatedAt" FROM posts'
       const query = (where.title) ? `${queryPost} WHERE title='${where.title}'` : queryPost
       return await sequelize.query(query, { model: Post })
