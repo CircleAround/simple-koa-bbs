@@ -14,8 +14,27 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     // モデルへのstatic関数追加の確認
+
     static async newest(where = {}) {
-      return await Post.findAll({ where, order: [['createdAt', 'DESC']], limit: 5, include: 'user' })
+      // return await Post.findAll({ where, order: [['createdAt', 'DESC']], limit: 5, include: 'user' })
+
+      // const query = `SELECT title, body, "createdAt", "updatedAt" FROM posts WHERE title=$1`
+      // return await sequelize.query(query, { model: Post, bind: [where.title] })
+
+      // !!
+      let query
+      if(where.title) {
+        query = `SELECT title, body, "createdAt", "updatedAt" 
+        FROM posts 
+        WHERE "createdAt" > current_date AND title='${where.title}' 
+        ORDER BY "createdAt" desc`
+      } else {
+        query = `SELECT title, body, "createdAt", "updatedAt" 
+        FROM posts 
+        WHERE "createdAt" > current_date
+        ORDER BY "createdAt" desc`
+      }
+      return await sequelize.query(query, { model: Post })
     }
 
     titleLength() {
