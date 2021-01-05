@@ -22,8 +22,18 @@ module.exports = (sequelize, DataTypes) => {
       // return await sequelize.query(query, { model: Post, bind: [where.title] })
 
       // !!
-      const queryPost = 'SELECT title, body, "createdAt", "updatedAt" FROM posts'
-      const query = (where.title) ? `${queryPost} WHERE title='${where.title}'` : queryPost
+      let query
+      if(where.title) {
+        query = `SELECT title, body, "createdAt", "updatedAt" 
+        FROM posts 
+        WHERE "createdAt" > current_date AND title='${where.title}' 
+        ORDER BY "createdAt" desc`
+      } else {
+        query = `SELECT title, body, "createdAt", "updatedAt" 
+        FROM posts 
+        WHERE "createdAt" > current_date
+        ORDER BY "createdAt" desc`
+      }
       return await sequelize.query(query, { model: Post })
     }
 
