@@ -1,0 +1,82 @@
+<html>
+<head>
+  <meta charset="UTF8"></meta>
+  <meta name="csrf-token" context="<%= csrfToken %>"></meta>
+  <style>
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    ul.errors {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul.errors li {
+      font-weight: bold;
+      color: darkred;
+      background-color: lightpink;
+      padding: 2px 5px;
+    }
+
+    .posts {
+      padding: 0;
+      list-style: none;
+    }
+
+    .posts li {
+      margin-bottom: 1em;
+      padding: .5em;
+    }
+
+    .post {
+      border: 1px solid gray;
+    }
+
+    .post .title {
+      background-color: lightblue;
+    }
+
+    .post .times {
+      font: small;
+      border-top: solid lightblue 1px;
+    }
+
+    .flash.info {
+      color: darkgreen;
+      background-color: lightgreen;
+    }
+
+    .flash.error {
+      color: darkred;
+      background-color: lightpink;
+    }
+
+    .user {
+      text-align: right;
+    }
+  </style>
+
+  <script src="/js/restful_links.js"></script>
+  <script>restfulLinks()</script>
+</head>
+
+<body>
+  <div class="container">
+    <h1><a href="/">簡単な掲示板</a></h1>
+    <div class="user">
+      <% if(currentUser) { %>
+        user: <%= currentUser.email %> <a href="/profile">プロフィール</a> <a data-method="delete" href="/sessions">ログアウト</a>
+      <% } else { %> 
+        <a href="/login">ログイン</a>
+        <a href="/signup">新規ユーザー登録</a>
+      <% } %>
+    </div>
+
+    <% if(flash) { %>
+      <% for(const [key, message] of Object.entries(flash)) { %>
+        <div class="flash <%= key %>"><%= message %></div>
+      <% } %>
+    <% } %>
+    

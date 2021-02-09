@@ -1,0 +1,10 @@
+<% if(error) { %>
+<ul class="errors">
+  <li>
+    <h3>入力エラーです</h3>
+  </li>
+  <% error.errors.forEach((errorItem)=>{ %>
+  <li><%= errorItem.message %></li>
+  <% }) %>
+</ul>
+<% } %>
