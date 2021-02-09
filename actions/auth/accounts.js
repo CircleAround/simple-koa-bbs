@@ -11,8 +11,9 @@ const index = async ctx => {
 }
 
 const create = async ctx => {
-  const { email, password } = ctx.request.body
-  const params = { email, password }
+  const { email, password, nickName } = ctx.request.body
+  const params = { email, password, nickName }
+  
   try {
     const user = await User.register(params)
     ctx.redirect('/login')

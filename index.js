@@ -10,7 +10,7 @@ const flash = require('koa-flash')
 const override = require('koa-override')
 
 const fs = require('fs')
-if(fs.existsSync('./env')) {
+if(fs.existsSync('./.env')) {
   const result = require('dotenv').config()
   if (result.error) {
     throw result.error
@@ -60,7 +60,7 @@ app
   .use(session({
     key: 'simple.bbs.session', 
     prefix: 'simplebbs:sessions:',
-    store: redisStore(process.env.REDIS_URL ? {url: process.env.REDIS_URL} : {})
+    store: process.env.REDIS_URL ? redisStore({url: process.env.REDIS_URL}) : redisStore()
   }))
   .use(flash())
   .use(async (ctx, next) => { 

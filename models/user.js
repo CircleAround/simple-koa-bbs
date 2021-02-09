@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async register({ nickName, email, password }) {
-      const passwordHash = this.generateHash(password)
+      const passwordHash = await this.generateHash(password)
       const user = this.build({nickName, email, password, passwordHash})
       await user.save()
       return user

@@ -4,9 +4,18 @@
   <% include ../../shared/validation_panel {error} %>
   <form action="/accounts" method="post">
     <%- csrfTag() %>
-    <input type="email" name="email" value="<%= params.email %>">
-    <input type="password" name="password">
-    <input type="submit" value="ユーザー登録">
+    <div>
+      <strong>ニックネーム:</strong><input type="text" name="nickName" value="<%= params.nickName %>">
+    </div>
+    <div>
+      <strong>Email:</strong><input type="email" name="email" value="<%= params.email %>">
+    </div>
+    <div>
+      <strong>パスワード:</strong><input type="password" name="password">
+    </div>
+    <div>
+      <input type="submit" value="ユーザー登録">
+    </div>
   </form>
 </div>
 <% include ../../shared/footer %>
