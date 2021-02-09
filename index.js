@@ -60,7 +60,7 @@ app
   .use(session({
     key: 'simple.bbs.session', 
     prefix: 'simplebbs:sessions:',
-    store: redisStore()
+    store: redisStore(process.env.REDIS_URL ? {url: process.env.REDIS_URL} : {})
   }))
   .use(flash())
   .use(async (ctx, next) => { 
