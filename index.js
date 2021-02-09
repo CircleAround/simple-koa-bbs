@@ -9,9 +9,12 @@ const convert = require('koa-convert')
 const flash = require('koa-flash')
 const override = require('koa-override')
 
-const result = require('dotenv').config()
-if (result.error) {
-  throw result.error
+const fs = require('fs')
+if(fs.existsSync('./env')) {
+  const result = require('dotenv').config()
+  if (result.error) {
+    throw result.error
+  }  
 }
 
 const Koa = require('koa')
@@ -91,11 +94,4 @@ app.on('error', (err, ctx) => {
 
 routes(router)
 
-app.listen(3000)
-
-
-/*
-・このアプリケーションの作りに依存している？もう少し汎用的ではないか？
-・変更される理由やタイミング、頻度について考える。責務。安定不安定。
-・一緒に変更されそうなものが一緒になっている
-*/
+app.listen(process.env.PORT || 3000)
