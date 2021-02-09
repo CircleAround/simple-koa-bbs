@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     // モデルへのstatic関数追加の確認
-    static async newest(where = {}) {
-      return await Post.findAll({ where, order: [['createdAt', 'DESC']], limit: 5, include: 'user' })
+    static async latest(where = {}) {
+      return await Post.findAll({ where, order: [['id', 'DESC']], limit: 5, include: 'user' })
     }
 
     titleLength() {

@@ -16,9 +16,13 @@ module.exports = (sequelize, DataTypes) => {
       this.posts = this.hasMany(models.post)
     }
 
-    static async register({ email, password }) {
-      const passwordHash = await bcrypt.hash(password, 10)
-      const user = this.build({email, password, passwordHash})
+    static async generateHash(password) {
+      return await bcrypt.hash(password, 10)
+    }
+
+    static async register({ nickName, email, password }) {
+      const passwordHash = this.generateHash(password)
+      const user = this.build({nickName, email, password, passwordHash})
       await user.save()
       return user
     }
@@ -46,6 +50,13 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: true,
         isEmail: true
+      }
+    },
+    nickName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true
       }
     },
     passwordHash: {
