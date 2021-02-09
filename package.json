@@ -35,9 +35,7 @@
     "path": "^0.12.7",
     "pg": "^8.4.2",
     "pg-hstore": "^2.3.3",
-    "sequelize": "^6.3.5"
-  },
-  "devDependencies": {
+    "sequelize": "^6.3.5",
     "babel-register": "^6.26.0",
     "sequelize-cli": "^6.2.0"
   }
