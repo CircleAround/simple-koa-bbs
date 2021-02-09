@@ -13,7 +13,7 @@ module.exports = function routes(router) {
     .get('/profile', sessions.show)
     .delete('/sessions', sessions.destroy)
     .post('/sessions', sessions.create)
-    
+
   router
     .get('/', posts.index)
     .post('/post', posts.create)

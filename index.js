@@ -55,6 +55,9 @@ app
   .use(logger())
   .use(require('koa-static')(path.join(__dirname, 'public')))
   .use(session({
+    cookie: {
+      httpOnly: true // !! cookieをJSで全抜きした時にセッションIDが入ってしまう
+    },
     key: 'simple.bbs.session', 
     prefix: 'simplebbs:sessions:',
     store: redisStore()

