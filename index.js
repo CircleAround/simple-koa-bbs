@@ -21,7 +21,9 @@ const Koa = require('koa')
 const app = new Koa()
 const routes = require('./routes')
 
-app.keys = [process.env['SESSION_KEY']]
+const sessionKey = process.env.SESSION_KEY
+if(!sessionKey) { throw new Error('process.env.SESSION_KEY not found') }
+app.keys = [sessionKey]
 
 // for legacy type middleware
 const _use = app.use
@@ -89,7 +91,7 @@ app.use(async (ctx, next) => {
 app.on('error', (err, ctx) => {
   // TODO: あとで実装する
   console.error(err.message)
-  console.trace()
+  console.error(err.stack)
 })
 
 routes(router)
