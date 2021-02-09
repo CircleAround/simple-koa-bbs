@@ -18,11 +18,7 @@ module.exports = (sequelize, DataTypes) => {
 
     async save() {
       await this.validate()
-<<<<<<< HEAD
       return await db.user.authenticate({email: this.email, password: this.password})
-=======
-      return await db.User.authenticate({email: this.email, password: this.password})
->>>>>>> signup and login
     }
   };
   Authenticator.init({

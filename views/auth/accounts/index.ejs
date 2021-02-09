@@ -1,24 +1,12 @@
-<<<<<<< HEAD
 <% include ../../shared/header %>
 <div>
   <h2>新規ユーザー登録</h2>
   <% include ../../shared/validation_panel {error} %>
   <form action="/accounts" method="post">
     <%- csrfTag() %>
-=======
-<%- include('../../shared/header') %>
-<div>
-  <h2>新規ユーザー登録</h2>
-  <%- include('../../shared/validation_panel', {error}) %>
-  <form action="/accounts" method="post">
->>>>>>> signup and login
     <input type="email" name="email" value="<%= params.email %>">
     <input type="password" name="password">
     <input type="submit" value="ユーザー登録">
   </form>
 </div>
-<<<<<<< HEAD
 <% include ../../shared/footer %>
-=======
-<%- include('../../shared/footer') %>
->>>>>>> signup and login

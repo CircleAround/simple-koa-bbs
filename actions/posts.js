@@ -1,10 +1,6 @@
 const { ValidationError } = require('sequelize')
 const db = require('../models')
-<<<<<<< HEAD
 const Post = db.post
-=======
-const Post = db.Post
->>>>>>> signup and login
 
 async function renderTop(ctx, post = {}, error = null) {
   const query = ctx.request.query
