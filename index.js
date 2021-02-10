@@ -97,21 +97,20 @@ app.on('error', (err, ctx) => {
 
 routes(router)
 
+let mailConfig
+if(process.env.NODE_ENV === 'production') {
+  mailConfig = {}
+} else {
+  // @see https://maildev.github.io/maildev/ Example Setups
+  mailConfig = {
+    debug: true,
+    port: 1025,
+    ignoreTLS: true
+  }
+}
 
 const boot = (app) => {
   const port = process.env.PORT || 3000
-  
-  let mailConfig
-  if(process.env.NODE_ENV === 'production') {
-    mailConfig = {}
-  } else {
-    mailConfig = {
-      debug: true,
-      port: 1025,
-      ignoreTLS: true
-    }
-  }
-
   mail.initMail(mailConfig).then(() => {
     app.listen(port, () => {
       console.log(`app listening at http://localhost:${port}`)
@@ -127,29 +126,10 @@ if (process.env.NODE_ENV == 'production') {
   boot(app)
 } else {
   const express = require('express')
-  const path = '/letter_opener'
-
-  // https://github.com/maildev/maildev/blob/master/docs/api.md#use-maildev-as-a-middleware
-  const { createProxyMiddleware } = require('http-proxy-middleware')
-  const MailDev = require('maildev')
-  const maildev = new MailDev({
-    basePathname: path
-  })
-  maildev.listen(function (err) {
-    if(err) { 
-      console.error('maildev listen failed')
-      console.error(err.message)
-      console.error(err.stack)
-    }
-    console.log('We can now sent emails to port 1025!')
-  })
-  const proxy = createProxyMiddleware(path, {
-    target: `http://localhost:1080`,
-    ws: true,
-  })
+  const letterOpener = require('./lib/middlewares/express_letter_opener')
 
   const expressApp = express()
-  expressApp.use(proxy)
+  expressApp.use(letterOpener({ path: '/letter_opener', port: mailConfig.port }))
   expressApp.use(app.callback())
   boot(expressApp)
 }
