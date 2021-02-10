@@ -8,6 +8,7 @@ const redisStore = require('koa-redis')
 const convert = require('koa-convert')
 const flash = require('koa-flash')
 const override = require('koa-override')
+const mail = require('./lib/mail')
 
 const fs = require('fs')
 if(fs.existsSync('./.env')) {
@@ -81,7 +82,7 @@ app.use(async (ctx, next) => {
     await next()
   } catch (err) {
     console.error(err.message)
-    console.trace()
+    console.error(err.stack)
     ctx.status = err.status || 500
     ctx.body = err.message
     ctx.app.emit('fatal error', err, ctx)
@@ -96,4 +97,9 @@ app.on('error', (err, ctx) => {
 
 routes(router)
 
-app.listen(process.env.PORT || 3000)
+mail.initMail().then(()=>{
+  app.listen(process.env.PORT || 3000)
+}, (err) => {
+  console.error(err.stack)
+})
+
