@@ -8,7 +8,7 @@ const redisStore = require('koa-redis')
 const convert = require('koa-convert')
 const flash = require('koa-flash')
 const override = require('koa-override')
-const mail = require('./lib/mail')
+const csrfToken = require('./lib/middlewares/csrf-token')
 
 const fs = require('fs')
 if (fs.existsSync('./.env')) {
@@ -29,24 +29,6 @@ app.keys = [sessionKey]
 // for legacy type middleware
 const _use = app.use
 app.use = x => _use.call(app, convert(x))
-
-const csrfToken = async (ctx, next) => {
-  const key = '_token'
-
-  // データが全く無いとIDが毎回変わるのでログインに失敗する為
-  ctx.session.accessedAt = new Date()
-
-  ctx.state.csrfToken = ctx.sessionId
-  ctx.state.csrfTag = () => `<input type="hidden" name="${key}" value="${ctx.sessionId}" />`
-
-  if (['POST', 'PUT', 'DELETE'].includes(ctx.method)) {
-    if (ctx.request.body[key] != ctx.sessionId) {
-      ctx.throw(403, 'CSRF Token mismatch')
-      return
-    }
-  }
-  await next()
-}
 
 views(app, {
   root: path.join(__dirname, 'views'),
@@ -97,39 +79,39 @@ app.on('error', (err, ctx) => {
 
 routes(router)
 
-let mailConfig
-if(process.env.NODE_ENV === 'production') {
-  mailConfig = {}
-} else {
-  // @see https://maildev.github.io/maildev/ Example Setups
-  mailConfig = {
-    debug: true,
-    port: 1025,
-    ignoreTLS: true
+const mail = require('./lib/mail')
+
+// TODO: 後で適切な場所を考える
+// ローカル開発環境でletter_opener的な機能を一緒に動かすギミック入り
+const listen = (app, port, callback) => {
+  const mailConfig = require('./config/mail')()
+
+  const boot = (app) => {
+    mail.initMail(mailConfig).then(() => {
+      app.listen(port, callback)
+    }, (err) => {
+      console.error('initMail failed')
+      console.error(err.message)
+      console.error(err.stack)
+    })
+  }
+  
+  if (process.env.NODE_ENV == 'production') {
+    boot(app)
+  } else {
+    // 開発用のnpmでexpressで提供されているものをいい感じに組み込む為に
+    // 開発時にはexpress経由でkoaのアプリケーションを呼ぶ
+    const express = require('express')
+    const mailDev = require('./lib/middlewares/express-maildev')
+  
+    const expressApp = express()
+    expressApp.use(mailDev({ path: '/letter_opener', port: mailConfig.port, web_port: port }))
+    expressApp.use(app.callback())
+    boot(expressApp)
   }
 }
 
-const boot = (app) => {
-  const port = process.env.PORT || 3000
-  mail.initMail(mailConfig).then(() => {
-    app.listen(port, () => {
-      console.log(`app listening at http://localhost:${port}`)
-    })
-  }, (err) => {
-    console.error('initMail failed')
-    console.error(err.message)
-    console.error(err.stack)
-  })
-}
-
-if (process.env.NODE_ENV == 'production') {
-  boot(app)
-} else {
-  const express = require('express')
-  const letterOpener = require('./lib/middlewares/express_letter_opener')
-
-  const expressApp = express()
-  expressApp.use(letterOpener({ path: '/letter_opener', port: mailConfig.port }))
-  expressApp.use(app.callback())
-  boot(expressApp)
-}
+const port = process.env.PORT || 3000
+listen(app, port, () => {
+  console.log(`app listening at http://localhost:${port}`)
+})
