@@ -19,6 +19,7 @@
     "@koa/router": "^9.4.0",
     "babel-register": "^6.26.0",
     "bcrypt": "^5.0.0",
+    "ejs": "^3.1.6",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-convert": "^2.0.0",

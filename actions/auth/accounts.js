@@ -1,5 +1,5 @@
+const authMailer = require('../../mailers/auth')
 const { ValidationError } = require('sequelize')
-const mail = require('../../lib/mail')
 const db = require('../../models')
 const User = db.user
 
@@ -8,7 +8,7 @@ const renderIndex = async (ctx, params, error = null) => {
 }
 
 const index = async ctx => {
-  sendConfirmationMail({email: 'test@example.com'}) // TODO: This is test
+  authMailer.sendConfirmationMail({email: 'test@example.com'}) // TODO: This is test
   await renderIndex(ctx, {})
 }
 
@@ -18,7 +18,7 @@ const create = async ctx => {
 
   try {
     const user = await User.register(params)
-    sendConfirmationMail(user)
+    authMailer.sendConfirmationMail(user)
     ctx.redirect('/login')
   } catch (e) {
     if (e instanceof ValidationError) {
@@ -28,19 +28,6 @@ const create = async ctx => {
 
     throw e
   }
-}
-
-const sendConfirmationMail = async (user) => {
-  // send mail with defined transport object
-  let info = await mail.mailer().sendMail({
-    from: '"SimpleBBS" <noreply@example.com>', // sender address
-    to: user.email, // list of receivers
-    subject: "[SimpleBBS]ユーザー登録確認", // Subject line
-    text: "Hello world?", // plain text body
-    html: "<b>Hello world?</b>", // html body
-  });
-
-  console.log("Message sent: %s", info.messageId);
 }
 
 module.exports = { index, create }
