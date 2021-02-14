@@ -83,7 +83,7 @@ const mail = require('./lib/mail')
 
 // TODO: 後で適切な場所を考える
 // ローカル開発環境でletter_opener的な機能を一緒に動かすギミック入り
-const listen = (app, port, callback) => {
+const listen = async (app, port, callback) => {
   const mailConfig = require('./config/mail')()
 
   const boot = (app) => {
@@ -102,10 +102,10 @@ const listen = (app, port, callback) => {
     // 開発用のnpmでexpressで提供されているものをいい感じに組み込む為に
     // 開発時にはexpress経由でkoaのアプリケーションを呼ぶ
     const express = require('express')
-    const mailDev = require('./lib/middlewares/express-maildev')
+    const mailDev = require('./lib/middlewares/express-maildev-middleware')
   
     const expressApp = express()
-    expressApp.use(mailDev({ path: '/letter_opener', port: mailConfig.port, web_port: port }))
+    expressApp.use(await mailDev({ path: '/letter_opener', port: mailConfig.port, web: port }))
     expressApp.use(app.callback())
     boot(expressApp)
   }
