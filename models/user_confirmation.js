@@ -12,6 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.user = this.belongsTo(models.user)
     }
+
+    async succeed() {
+      this.confirmedAt = new Date()
+      return await this.save()
+    }
   };
   UserConfirmation.init({
     userId: {
@@ -33,7 +38,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'user_confirmation',
+    modelName: 'userConfirmation',
+    tableName: 'user_confirmations'
   });
   return UserConfirmation;
 };

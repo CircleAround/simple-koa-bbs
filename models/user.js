@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.posts = this.hasMany(models.post)
-      this.user_confirmations = this.hasMany(models.user_confirmation)
+      this.UserConfirmations = this.hasMany(models.userConfirmation)
     }
 
     static async generateHash(password) {
@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
 
     static async register({ nickName, email, password }) {
       const passwordHash = await this.generateHash(password)
+      
+      // TODO: 重複は例外になるので、チェックを入れる
+      // TODO: パスワードののハッシュは使わないべき。フォーマットちゃんとする
       const confirmationToken = await this.generateHash(Math.random().toString())
       const user = await this.create(
         {
@@ -31,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
             token: confirmationToken
           }]
         }, {
-          include: [ User.user_confirmations ]
+          include: [ User.UserConfirmations ]
         }
       )
       return user
@@ -51,6 +54,11 @@ module.exports = (sequelize, DataTypes) => {
       const match = bcrypt.compare(password, user.passwordHash)
       if (!match) { throwError() }
       return user
+    }
+
+    async lastConfirmation() { 
+      const confirmations = await this.getUserConfirmations()
+      return (confirmations.length == 0) ? null : confirmations[confirmations.length - 1]
     }
   };
   User.init({

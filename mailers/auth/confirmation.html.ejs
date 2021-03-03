@@ -1,3 +1,15 @@
 簡単な掲示板のアカウント作成が申請されました。
 以下のURLをクリックするとアカウントが正常に作成されます。
 心当たりのない方はクリックしないでください。
+
+<%= data %>
+
+<% 
+confirmationUrl = `${host}/confirm/?token=${(await data.lastConfirmation()).token}` 
+%>
+<a href="<%= confirmationUrl %>">承認する</a>
+
+<hr>
+
+ボタンが押せない方は以下のURLへアクセスしてください。
+<a href="<%= confirmationUrl %>"><%= confirmationUrl %></a>
