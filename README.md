@@ -6,8 +6,8 @@ Redisをインストールしておいてください
 
 ```
 npm install
-npm run-script reset
-npm run-script dev
+npm run reset
+npm run dev
 ```
 
 and access http://localhost:3000
