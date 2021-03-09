@@ -12,6 +12,7 @@ module.exports = function routes(router) {
     .get('/confirm', accounts.confirm)
     .get('/login', sessions.index)
     .get('/profile', sessions.show)
+    .get('/avator', sessions.avator)
     .delete('/sessions', sessions.destroy)
     .post('/sessions', sessions.create)
     
