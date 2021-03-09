@@ -79,15 +79,13 @@ app.on('error', (err, ctx) => {
 
 routes(router)
 
-const mail = require('./lib/mail')
+const initializer = require('./config/initializer')
 
 // TODO: 後で適切な場所を考える
 // ローカル開発環境でletter_opener的な機能を一緒に動かすギミック入り
 const listen = async (app, port, callback) => {
-  const mailConfig = require('./config/mail')()
-
   const boot = (app) => {
-    mail.initMail(mailConfig).then(() => {
+    initializer().then(() => {
       app.listen(port, callback)
     }, (err) => {
       console.error('initMail failed')
@@ -99,13 +97,18 @@ const listen = async (app, port, callback) => {
   if (process.env.NODE_ENV == 'production') {
     boot(app)
   } else {
+    const mailConfig = require('./config/mail')()
+
     // 開発用のnpmでexpressで提供されているものをいい感じに組み込む為に
     // 開発時にはexpress経由でkoaのアプリケーションを呼ぶ
     const express = require('express')
     const mailDev = require('./lib/middlewares/express-maildev-middleware')
-  
+
+    const { bullRouter } = require('bull-board')
+    
     const expressApp = express()
     expressApp.use(await mailDev({ path: '/letter_opener', port: mailConfig.port, web: port }))
+    expressApp.use('/queues', bullRouter)    
     expressApp.use(app.callback())
     boot(expressApp)
   }
