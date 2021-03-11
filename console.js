@@ -1,5 +1,8 @@
 const repl = require('repl')
 const context = repl.start('> ').context
+const boot = require('./boot')
+boot()
+
 context.models = require('./models')
 console.log('> Models loaded on `models` global variable')
 
