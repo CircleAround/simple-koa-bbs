@@ -3,21 +3,30 @@ const mailers = require('../mailers')
 const db = require('../models')
 const User = db.user
 
-job.queues().email.process(async (job)=>{
-  const userId = job.data.userId
+job.queues().mailers.process(async (job)=>{
+  const userId = job.data.params.userId
   const user = await User.findByPk(userId)
   if(!user) {  
     throw new Error(`User not found: id=${userId}`)
   }
 
-  // TODO: confirmationの状態をチェックして送信不要なら送らない
+  const type = 'mailers'
+  const methodName = job.data.methodName
+  const methods = methodName.split('.')
+  let method = mailers
+  methods.forEach((m) => {
+    method = method[m]
+    if(!method) {
+      throw new Error(`method not found: ${type}.${methodName}`)
+    }
+  })
 
-  console.log('sendConfirmationMail')
-  await mailers.auth.sendConfirmationMail(user)
+  console.log(`call ${type}.${methodName}`)
+  await method(user)
 })
 
 const sendConfirmationMail = async function (user){
-  job.queues().email.add({ userId: user.id })
+  job.enqueue('mailers', 'auth.sendConfirmationMail', { userId: user.id })
 }
 
 module.exports = { sendConfirmationMail }

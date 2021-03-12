@@ -1,6 +1,6 @@
 function config() {
   const queueOptions = {
-    email: {}
+    mailers: {}
   }
 
   if(process.env.NODE_ENV == 'production') {
