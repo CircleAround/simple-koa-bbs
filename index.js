@@ -10,17 +10,12 @@ const flash = require('koa-flash')
 const override = require('koa-override')
 const csrfToken = require('./lib/middlewares/csrf-token')
 
-const fs = require('fs')
-if (fs.existsSync('./.env')) {
-  const result = require('dotenv').config()
-  if (result.error) {
-    throw result.error
-  }
-}
-
 const Koa = require('koa')
 const app = new Koa()
 const routes = require('./routes')
+
+const boot = require('./boot')
+boot()
 
 const sessionKey = process.env.SESSION_KEY
 if (!sessionKey) { throw new Error('process.env.SESSION_KEY not found') }
@@ -79,15 +74,13 @@ app.on('error', (err, ctx) => {
 
 routes(router)
 
-const mail = require('./lib/mail')
+const initializer = require('./config/initializer')
 
 // TODO: 後で適切な場所を考える
 // ローカル開発環境でletter_opener的な機能を一緒に動かすギミック入り
 const listen = async (app, port, callback) => {
-  const mailConfig = require('./config/mail')()
-
   const boot = (app) => {
-    mail.initMail(mailConfig).then(() => {
+    initializer().then(() => {
       app.listen(port, callback)
     }, (err) => {
       console.error('initMail failed')
@@ -99,13 +92,17 @@ const listen = async (app, port, callback) => {
   if (process.env.NODE_ENV == 'production') {
     boot(app)
   } else {
+    const mailConfig = require('./config/mail')()
+
     // 開発用のnpmでexpressで提供されているものをいい感じに組み込む為に
     // 開発時にはexpress経由でkoaのアプリケーションを呼ぶ
     const express = require('express')
     const mailDev = require('./lib/middlewares/express-maildev-middleware')
-  
+    const bullBoard = require('bull-board')
+
     const expressApp = express()
     expressApp.use(await mailDev({ path: '/letter_opener', port: mailConfig.port, web: port }))
+    expressApp.use('/admin/queues', bullBoard.router) // TODO: productionに移動するならアクセス制限
     expressApp.use(app.callback())
     boot(expressApp)
   }

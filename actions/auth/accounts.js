@@ -1,6 +1,6 @@
-const authMailer = require('../../mailers/auth')
+const jobs = require('../../app/jobs')
 const { ValidationError } = require('sequelize')
-const db = require('../../models')
+const db = require('../../app/models')
 const User = db.user
 const UserConfirmation = db.userConfirmation
 
@@ -18,7 +18,7 @@ const create = async ctx => {
 
   try {
     const user = await User.register(params)
-    authMailer.sendConfirmationMail(user)
+    jobs.sendConfirmationMail({ userId: user.id })
     ctx.redirect('/login')
   } catch (e) {
     if (e instanceof ValidationError) {
