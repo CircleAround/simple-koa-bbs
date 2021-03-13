@@ -1,6 +1,6 @@
-const jobs = require('../../jobs')
+const jobs = require('../../app/jobs')
 const { ValidationError } = require('sequelize')
-const db = require('../../models')
+const db = require('../../app/models')
 const User = db.user
 const UserConfirmation = db.userConfirmation
 

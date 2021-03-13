@@ -1,19 +1,42 @@
 const repl = require('repl')
-const context = repl.start('> ').context
 const boot = require('./boot')
+const app = require('./app')
+const fs = require('fs')
 boot()
-
-context.models = require('./models')
-console.log('> Models loaded on `models` global variable')
 
 const initializer = require('./config/initializer')
 initializer().then(()=>{
-  context.mailers = require('./mailers')
-  console.log('> Mailers loaded on `mailers` global variable')
+  function initContext(context) {
+    console.log('loading app features...')
+    for(const key of Object.keys(app)) {
+      console.log(`> "${key}" loaded on global`)
+      context[key] = app[key]
+    }
+    console.log('> app features loaded!\n')
 
-  context.queues = require('./lib/job')
-  context.jobs = require('./jobs')
-  console.log('> Queues loaded on `queues` global variable')
-  console.log('> Jobs loaded on `jobs` global variable')
+    replServer.displayPrompt(true)
+  }
+
+  const replServer = repl.start({useColors: true, })
+  replServer.on('reset', initContext)
+  enableHistory(replServer)
+
+  initContext(replServer.context)
 })
 
+// @see https://qiita.com/acro5piano/items/dc62b94d7b04505a4aca
+function enableHistory(replServer) {
+  const replHistoryPath = `${process.env.HOME}/.node_repl_history`
+  fs.readFile(replHistoryPath, 'utf8', (err, data) =>
+    data.split('\n').forEach(command =>
+      replServer.history.push(command)
+    )
+  )
+  
+  replServer.on('exit', () => {
+    fs.writeFile(replHistoryPath, replServer.history.join('\n'), err => {
+      console.log(err)
+      process.exit();
+    })
+  });  
+}

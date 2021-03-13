@@ -1,6 +1,7 @@
-const job = require('../lib/job')
+const job = require('../../lib/job')
 
-const sendConfirmationMail = async function (params){
+const sendConfirmationMail = function (params){
+  console.log(job)
   job.enqueue('mailers', 'auth.sendConfirmationMail', params)
 }
 
