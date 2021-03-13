@@ -1,3 +1,5 @@
+const fs = require('fs')
+const path = require('path')
 const {DataTypes, ValidationError} = require('sequelize')
 const db = require('../../app/models/')
 const Authenticator = require('../../app/models/user/authenticator')(db.sequelize, DataTypes)
@@ -47,6 +49,23 @@ const destroy = async (ctx, next) => {
   ctx.redirect('/login')
 }
 
+const avator = async(ctx, next) => {
+  // ここの条件を複雑にすれば色々なパターンでアクセスブロックできます。
+  // 今は「ログインしていなければ取れない」です
+  if(!ctx.state.currentUser) {
+    return
+  }
+
+  // このディレクトリに事前にファイルアップロードをしたと考えてください。
+  // 実際にはこのファイルパスはDBから取ってきたりするようなものです。
+  // サーバのファイルとして保存されている前提で書いていますが、このファイルの取得方法は
+  // 例えばAWS S3から取ってくるなど他にも考えられます。
+  const fileName = path.join(__dirname, '../../resources/sato.jpg') // ここは非公開ディレクトリ
+
+  ctx.set('Content-Type', 'image/jpeg')
+  ctx.body = fs.createReadStream(fileName)
+}
+
 const currentUser = async (ctx, next) => {
   if(ctx.session.userId) {
     ctx.state.currentUser = await User.findByPk(ctx.session.userId)
@@ -56,4 +75,4 @@ const currentUser = async (ctx, next) => {
   await next()
 }
 
-module.exports = { index, show, create, destroy, currentUser }
+module.exports = { index, show, create, destroy, avator, currentUser }
