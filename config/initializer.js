@@ -1,4 +1,4 @@
-const names = ['mail', 'job']
+const names = ['mail', 'job'] // TODO: この取得を自動にする
 
 function initialize() {
   const initializers = names.map((name)=>{ 
