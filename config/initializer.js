@@ -1,14 +1,13 @@
-const mail = require('../lib/mail')
-const mailConfig = require('../config/mail')()
-
-const job = require('../lib/job')
-const jobConfig = require('../config/job')()
+const names = ['mail', 'job']
 
 function initialize() {
-  return Promise.all([
-    mail.initMail(mailConfig), 
-    job.initJob(jobConfig)
-  ])
+  const initializers = names.map((name)=>{ 
+    const extension = require(`../extensions/${name}`)
+    const config = require(`../config/${name}`)()
+    return extension.component.initialize(config)
+  })
+
+  return Promise.all(initializers)
 }
 
 module.exports = initialize
