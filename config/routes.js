@@ -1,6 +1,6 @@
-const posts = require('./actions/posts')
-const accounts = require('./actions/auth/accounts')
-const sessions = require('./actions/auth/sessions')
+const posts = require('../actions/posts')
+const accounts = require('../actions/auth/accounts')
+const sessions = require('../actions/auth/sessions')
 
 module.exports = function routes(router) {
   router

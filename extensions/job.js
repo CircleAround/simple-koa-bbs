@@ -12,7 +12,7 @@ const app = require('../app')
 // optionsを配列で渡した場合、0番目がRedisのURL扱い、1番目がオプション扱いされる
 
 let _queues
-async function initJob(options) {
+async function initialize(options) {
   // TODO: 配列の場合にはRedisURLとオプションの組み合わせ Bullに合わせたが将来は変えたい
   if(options instanceof Array) {
     [redisUrl, options] = options
@@ -72,7 +72,7 @@ function initAutoProcess(type='mailers') {
   })
 }
 
-ex.initJob = initJob
+ex.component = { initialize }
 ex.queues = queues
 ex.queueNames = queueNames
 ex.enqueue = enqueue

@@ -1,4 +1,4 @@
-const job = require('../../lib/job')
+const job = require('../../extensions/job')
 
 const sendConfirmationMail = function (params){
   console.log(job)

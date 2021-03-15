@@ -1,13 +1,27 @@
-const ejs = require('ejs')
-const mail = require('./mail')
-const path = require('path')
+const ex = module.exports = {}
 
+const nodemailer = require("nodemailer")
+const ejs = require('ejs')
+const path = require('path')
 const mailerConfig = require('../config/mailer')() // TODO: コンフィグの位置は固定したくない
 
+let transporter
+
+async function initialize(options) {
+  // create reusable transporter object using the default SMTP transport
+  transporter = nodemailer.createTransport(options)
+  return transporter
+}
+
+function mailer() {
+  if (!transporter) { throw new Error('mailer must initialze. call initMail()') }
+  return transporter
+}
+
 const render = (file, data) => {
-  return new Promise((resolve, reject)=>{
-    ejs.renderFile(file, data, {async: true}, (err, rendered) => {
-      if(err) { reject(err) }
+  return new Promise((resolve, reject) => {
+    ejs.renderFile(file, data, { async: true }, (err, rendered) => {
+      if (err) { reject(err) }
       else { resolve(rendered) }
     })
   })
@@ -34,47 +48,49 @@ function createMailer(options = {}) {
   // key パラメータが入っている場合、それはメールテンプレートのファイル名扱い。
   options = { ...mailerConfig, ...options }
 
-  const send = async({key, data, ...params}) => {
+  const send = async ({ key, data, ...params }) => {
     // console.debug({ key, ...params })
 
     params = { ...options, ...params }
 
-    if(!params.to) {
+    if (!params.to) {
       throw new Error('`params.to` is required')
     }
-    if(!params.subject) {
+    if (!params.subject) {
       throw new Error('`params.subject` is required')
     }
 
-    if(key) {
-      if(!params.rootDir) {
+    if (key) {
+      if (!params.rootDir) {
         throw new Error('if specified `params.key`, `params.rootDir` is required')
       }
 
-      const templateData = {key, data, ...params}
-      if(params.text === undefined) {
+      const templateData = { key, data, ...params }
+      if (params.text === undefined) {
         params.text = await render(path.join(params.rootDir, `${key}.text.ejs`), templateData)
       }
-      if(params.html === undefined) {
+      if (params.html === undefined) {
         params.html = await render(path.join(params.rootDir, `${key}.html.ejs`), templateData)
       }
     }
 
-    if(!params.html) {
+    if (!params.html) {
       console.debug('[INFO]without html mailbody')
     }
-    if(!params.text) {
+    if (!params.text) {
       console.error('[WARN]without text mailbody')
     }
 
-    const info = await mail.mailer().sendMail(params)
+    const info = await mailer().sendMail(params)
     console.info(`sent mail ${info.messageId}`)
     return info
   }
-  
+
   return {
     send
   }
 }
 
-module.exports = { createMailer }
+ex.component = { initialize }
+ex.mailer = mailer
+ex.createMailer = createMailer
