@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@koa/router": "^9.4.0",
+    "aws-sdk": "^2.864.0",
     "babel-register": "^6.26.0",
     "bcrypt": "^5.0.0",
     "bull": "^3.20.1",

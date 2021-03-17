@@ -1,4 +1,4 @@
-const names = ['mail', 'job'] // TODO: この取得を自動にする
+const names = ['mail', 'job', 'storage'] // TODO: この取得をextensionsディレクトリから自動で取る
 
 function initialize() {
   const initializers = names.map((name)=>{ 
