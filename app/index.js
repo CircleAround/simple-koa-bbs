@@ -1,6 +1,3 @@
 const ex = module.exports = {}
-
-ex.jobs = require('./jobs'),
-ex.mailers = require('./mailers'),
-ex.models = require('./models')
-ex.tasks = require('./tasks')
+const path = require('path')
+require('../lib/autoload').autoload(ex, __dirname, path.basename(__filename))
