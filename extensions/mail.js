@@ -3,11 +3,13 @@ const ex = module.exports = {}
 const nodemailer = require("nodemailer")
 const ejs = require('ejs')
 const path = require('path')
-const mailerConfig = require('../config/mailer')() // TODO: コンフィグの位置は固定したくない
+let mailerConfig
 
 let transporter
 
-async function initialize(options) {
+async function initialize(options, configDir) {
+  mailerConfig = require(path.join(configDir, 'mailer'))()
+
   // create reusable transporter object using the default SMTP transport
   transporter = nodemailer.createTransport(options)
   return transporter
@@ -40,6 +42,10 @@ const render = (file, data) => {
  */
 
 function createMailer(options = {}) {
+  if(mailerConfig === undefined) {
+    throw new Error('initialize is not complete')
+  }
+
   // メール送信のオプションは 
   // 1. mailerConfigのシステムグローバル
   // 2. 各メーラー作成時のoptions引数

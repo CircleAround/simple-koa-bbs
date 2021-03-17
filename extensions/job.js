@@ -33,12 +33,12 @@ async function initialize(options) {
 }
 
 function queueNames() {
-  if(!_queues) { throw new Error('initJob is not complete') }
+  if(!_queues) { throw new Error('initialize is not complete') }
   return Object.keys(_queues)
 }
 
 function queues() {
-  if(!_queues) { throw new Error('initJob is not complete') }
+  if(!_queues) { throw new Error('initialize is not complete') }
   return _queues
 }
 
