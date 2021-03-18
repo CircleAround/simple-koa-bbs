@@ -27,6 +27,15 @@ initializer().then(()=>{
 // @see https://qiita.com/acro5piano/items/dc62b94d7b04505a4aca
 function enableHistory(replServer) {
   const replHistoryPath = `${process.env.HOME}/.node_repl_history`
+  if (!fs.existsSync(replHistoryPath)) {
+    fs.writeFile(replHistoryPath, '', (err) => {
+      if(err) { 
+        console.log(err.stack)
+        throw err
+      }
+    });
+  }
+
   fs.readFile(replHistoryPath, 'utf8', (err, data) =>
     data.split('\n').forEach(command =>
       replServer.history.push(command)
