@@ -1,0 +1,24 @@
+{
+  "name": "SimpleBBS",
+  "repository": "https://github.com/CircleAround/simple-koa-bbs",
+  "addons": [
+    {
+      "plan": "heroku-redis:hobby-dev"
+    },
+    {
+      "plan": "heroku-postgresql",
+      "options": {
+        "version": "12"
+      }
+    },
+    {
+      "plan": "sendgrid:starter"
+    }
+  ],
+  "env": {
+    "SESSION_KEY": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    }
+  } 
+}
