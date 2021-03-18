@@ -1,3 +1,5 @@
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 # これはなんですか？
 Node.js + Koa + Sequelize で作成した簡単な掲示板サンプルです。
 
