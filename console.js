@@ -1,5 +1,5 @@
 const repl = require('repl')
-const boot = require('./boot')
+const boot = require('./config/boot')
 const app = require('./app')
 const fs = require('fs')
 boot()
