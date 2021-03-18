@@ -1,6 +1,6 @@
 const repl = require('repl')
 const boot = require('./config/boot')
-const app = require('./app')
+const app = require('./app/')
 const fs = require('fs')
 boot()
 
@@ -12,6 +12,7 @@ initializer().then(()=>{
       console.log(`> "${key}" loaded on global`)
       context[key] = app[key]
     }
+    context.app = app
     console.log('> app features loaded!\n')
 
     replServer.displayPrompt(true)
