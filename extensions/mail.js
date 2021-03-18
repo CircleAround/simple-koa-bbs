@@ -3,11 +3,13 @@ const ex = module.exports = {}
 const nodemailer = require("nodemailer")
 const ejs = require('ejs')
 const path = require('path')
-let mailerConfig
 
+let mailerConfig
+let _configDir
 let transporter
 
 async function initialize(options, configDir) {
+  _configDir = configDir
   mailerConfig = require(path.join(configDir, 'mailer'))()
 
   // create reusable transporter object using the default SMTP transport
@@ -97,6 +99,14 @@ function createMailer(options = {}) {
   }
 }
 
+async function expressMiddleware(webPath, port) {
+  const mailConfig = require(path.join(_configDir, 'mail'))()
+  const mailDev = require('../lib/middlewares/express-maildev-middleware')
+
+  return await mailDev({ path: webPath, port: mailConfig.port, web: port })
+}
+
 ex.component = { initialize }
 ex.mailer = mailer
 ex.createMailer = createMailer
+ex.expressMiddleware = expressMiddleware

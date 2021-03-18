@@ -1,4 +1,5 @@
 const path = require('path')
+const express = require('express')
 const views = require('koa-ejs')
 const logger = require('koa-logger')
 const router = require('@koa/router')()
@@ -12,7 +13,9 @@ const csrfToken = require('./lib/middlewares/csrf-token')
 
 const Koa = require('koa')
 const app = new Koa()
+const initializer = require('./config/initializer')
 const routes = require('./config/routes')
+const expressRoutes = require('./config/expressRoutes')
 
 const boot = require('./boot')
 boot()
@@ -74,32 +77,12 @@ app.on('error', (err, ctx) => {
 
 routes(router)
 
-// Express向けに提供されているMiddlewareはここで入れる
-// 将来的にはもう少し違う形にしたい
-async function configExpress(expressApp) {
-  const bullBoard = require('bull-board')
-
-  if (process.env.NODE_ENV == 'production') {
-    expressApp.use('/admin/queues', bullBoard.router) // TODO: アクセス制限
-  } else {
-    const mailConfig = require('./config/mail')()
-    const mailDev = require('./lib/middlewares/express-maildev-middleware')
-
-    expressApp.use(await mailDev({ path: '/letter_opener', port: mailConfig.port, web: port }))
-    expressApp.use('/admin/queues', bullBoard.router)
-  }
-}
-
-const initializer = require('./config/initializer')
-
 const listen = async (app, port, callback) => {
-  const express = require('express')
-  const expressApp = express()
-
-  await configExpress(expressApp)
-  expressApp.use(app.callback())
-
-  initializer().then(() => {
+  initializer().then(async () => {
+    const expressApp = express()
+    await expressRoutes(expressApp, port)
+    expressApp.use(app.callback())
+    
     expressApp.listen(port, callback)
   }, (err) => {
     console.error('initialize failed')

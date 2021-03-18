@@ -2,7 +2,7 @@ const posts = require('../actions/posts')
 const accounts = require('../actions/auth/accounts')
 const sessions = require('../actions/auth/sessions')
 
-module.exports = function routes(router) {
+module.exports = function (router) {
   router
     .use(sessions.currentUser)
 
@@ -14,7 +14,7 @@ module.exports = function routes(router) {
     .get('/profile', sessions.show)
     .delete('/sessions', sessions.destroy)
     .post('/sessions', sessions.create)
-    
+
   router
     .get('/', posts.index)
     .post('/post', posts.create)

@@ -1,6 +1,7 @@
 const ex = module.exports = {}
 
 const Queue = require('bull')
+const bullBoard = require('bull-board')
 
 const { setQueues, BullAdapter } = require('bull-board')
 const app = require('../app')
@@ -76,3 +77,4 @@ ex.component = { initialize }
 ex.queues = queues
 ex.queueNames = queueNames
 ex.enqueue = enqueue
+ex.expressRouter = bullBoard.router
