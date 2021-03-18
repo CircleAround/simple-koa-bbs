@@ -1,5 +1,6 @@
+const fs = require('fs')
+
 module.exports = () => {
-  const fs = require('fs')
   if (fs.existsSync('./.env')) {
     const result = require('dotenv').config()
     if (result.error) {

@@ -1,13 +1,11 @@
-const names = ['mail', 'job', 'storage'] // TODO: この取得をextensionsディレクトリから自動で取る
+const path = require('path')
 
-function initialize() {
-  const initializers = names.map((name)=>{ 
-    const extension = require(`../extensions/${name}`)
-    const config = require(`../config/${name}`)()
-    return extension.component.initialize(config)
-  })
+const { initialize } = require('../lib/autoload')
 
-  return Promise.all(initializers)
+module.exports = () => {
+  return initialize(
+    path.join(__dirname, '../extensions'), 
+    path.basename(__filename),
+    path.join(__dirname, '../config'), 
+  )
 }
-
-module.exports = initialize

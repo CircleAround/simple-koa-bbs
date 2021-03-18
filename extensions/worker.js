@@ -1,6 +1,7 @@
 const ex = module.exports = {}
 
 const Queue = require('bull')
+const bullBoard = require('bull-board')
 
 const { setQueues, BullAdapter } = require('bull-board')
 const app = require('../app')
@@ -33,12 +34,12 @@ async function initialize(options) {
 }
 
 function queueNames() {
-  if(!_queues) { throw new Error('initJob is not complete') }
+  if(!_queues) { throw new Error('initialize is not complete') }
   return Object.keys(_queues)
 }
 
 function queues() {
-  if(!_queues) { throw new Error('initJob is not complete') }
+  if(!_queues) { throw new Error('initialize is not complete') }
   return _queues
 }
 
@@ -76,3 +77,4 @@ ex.component = { initialize }
 ex.queues = queues
 ex.queueNames = queueNames
 ex.enqueue = enqueue
+ex.expressRouter = bullBoard.router
