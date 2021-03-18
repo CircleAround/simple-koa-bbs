@@ -23,8 +23,9 @@ async function initialize(options) {
   const { queueOptions, ...globalOptions } = options
   const names = Object.keys(queueOptions)
   names.forEach((name)=>{
-    const queueOption = queueOptions[name] || {}
-    const queue = new Queue(name, { ...globalOptions, ...queueOption })
+    let queueOption = queueOptions[name] || {}
+    queueOption = { ...globalOptions, ...queueOption }
+    const queue = redisUrl ? new Queue(name, redusUrl, quueeOption) : new Queue(name, quueeOption)
     initialQueues[name] = queue
   })
   _queues = initialQueues
