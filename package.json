@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@koa/router": "^9.4.0",
+    "@ms2sato/maildev": "^1.1.0",
     "aws-sdk": "^2.864.0",
     "babel-register": "^6.26.0",
     "bcrypt": "^5.0.0",
@@ -24,6 +25,7 @@
     "bull-board": "^1.4.2",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
+    "http-proxy-middleware": "^1.0.6",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-convert": "^2.0.0",
@@ -45,8 +47,6 @@
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
-    "http-proxy-middleware": "^1.0.6",
-    "maildev": "git+https://github.com/ms2sato/maildev",
     "nodemon": "^2.0.7"
   }
 }
