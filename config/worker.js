@@ -1,4 +1,4 @@
-function config() {
+async function config() {
   const queueOptions = {
     mailers: {}
   }
