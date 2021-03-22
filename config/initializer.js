@@ -6,6 +6,6 @@ module.exports = () => {
   return initialize(
     path.join(__dirname, '../extensions'), 
     path.basename(__filename),
-    path.join(__dirname, '../config'), 
+    path.join(__dirname, '../config/extensions'), 
   )
 }
