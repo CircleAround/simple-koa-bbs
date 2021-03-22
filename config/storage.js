@@ -1,4 +1,4 @@
-function config() {
+async function config() {
   return {
     region: process.env.AWS_DEFAULT_REGION,
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,

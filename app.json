@@ -12,7 +12,7 @@
       }
     },
     {
-      "plan": "sendgrid:starter"
+      "plan": "mailtrap:unpaid"
     }
   ],
   "env": {

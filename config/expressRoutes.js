@@ -5,7 +5,10 @@ module.exports = async function (expressApp, port) {
   if (process.env.NODE_ENV == 'production') {
     expressApp.use('/admin/queues', worker.expressRouter) // TODO: アクセス制限
   } else {
-    expressApp.use(await mail.expressMiddleware('/letter_opener', port))
+    if(mail.canUseDebugMiddleware()) {
+      expressApp.use(await mail.getDebugExpressMiddleware('/letter_opener', port))
+    }
+    
     expressApp.use('/admin/queues', worker.expressRouter)
   }
 }

@@ -4,13 +4,16 @@ const nodemailer = require("nodemailer")
 const ejs = require('ejs')
 const path = require('path')
 
+let mailConfig
 let mailerConfig
 let _configDir
 let transporter
 
 async function initialize(options, configDir) {
   _configDir = configDir
-  mailerConfig = require(path.join(configDir, 'mailer'))()
+  
+  mailConfig = await require(path.join(_configDir, 'mail'))()
+  mailerConfig = await require(path.join(configDir, 'mailer'))()
 
   // create reusable transporter object using the default SMTP transport
   transporter = nodemailer.createTransport(options)
@@ -99,14 +102,20 @@ function createMailer(options = {}) {
   }
 }
 
-async function expressMiddleware(webPath, port) {
-  const mailConfig = require(path.join(_configDir, 'mail'))()
+async function getDebugExpressMiddleware(webPath, port) {
+  if(!canUseDebugMiddleware()) { throw new Error('mail config type is not "maildev"') }
+
   const mailDev = require('../lib/middlewares/express-maildev-middleware')
 
   return await mailDev({ path: webPath, port: mailConfig.port, web: port })
 }
 
+function canUseDebugMiddleware() {
+  return mailConfig.type === 'maildev'
+}
+
 ex.component = { initialize }
 ex.mailer = mailer
 ex.createMailer = createMailer
-ex.expressMiddleware = expressMiddleware
+ex.getDebugExpressMiddleware = getDebugExpressMiddleware
+ex.canUseDebugMiddleware = canUseDebugMiddleware

@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       const user = await this.create(
         {
           nickName, email, password, passwordHash,
-          user_confirmations: [{
+          userConfirmations: [{
             token: confirmationToken
           }]
         }, {

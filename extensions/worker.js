@@ -4,7 +4,7 @@ const Queue = require('bull')
 const bullBoard = require('bull-board')
 
 const { setQueues, BullAdapter } = require('bull-board')
-const app = require('../app')
+const app = require('../app/')
 
 // TODO: あとでちゃんと書く
 // options の基本構造はBullのオプションのまま
@@ -14,6 +14,7 @@ const app = require('../app')
 
 let _queues
 async function initialize(options) {
+  let redisUrl
   // TODO: 配列の場合にはRedisURLとオプションの組み合わせ Bullに合わせたが将来は変えたい
   if(options instanceof Array) {
     [redisUrl, options] = options
@@ -23,8 +24,9 @@ async function initialize(options) {
   const { queueOptions, ...globalOptions } = options
   const names = Object.keys(queueOptions)
   names.forEach((name)=>{
-    const queueOption = queueOptions[name] || {}
-    const queue = new Queue(name, { ...globalOptions, ...queueOption })
+    let queueOption = queueOptions[name] || {}
+    queueOption = { ...globalOptions, ...queueOption }
+    const queue = redisUrl ? new Queue(name, redisUrl, queueOption) : new Queue(name, queueOption)
     initialQueues[name] = queue
   })
   _queues = initialQueues

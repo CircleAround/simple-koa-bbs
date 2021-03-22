@@ -1,4 +1,4 @@
-function config() {
+async function config() {
   const queueOptions = {
     mailers: {}
   }
@@ -6,6 +6,8 @@ function config() {
   if(process.env.NODE_ENV == 'production') {
     return [process.env.REDIS_URL, { queueOptions }] // [REDIS_URL, options]
   }
+  
+  //return ['redis://localhost:6379', { queueOptions }]
   return { queueOptions }
 }
 
