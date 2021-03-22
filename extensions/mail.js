@@ -99,14 +99,21 @@ function createMailer(options = {}) {
   }
 }
 
-async function expressMiddleware(webPath, port) {
+async function getDebugExpressMiddleware(webPath, port) {
+  if(!canUseDebugMiddleware()) { throw new Error('mail config type is not "maildev"') }
+
   const mailConfig = require(path.join(_configDir, 'mail'))()
   const mailDev = require('../lib/middlewares/express-maildev-middleware')
 
   return await mailDev({ path: webPath, port: mailConfig.port, web: port })
 }
 
+function canUseDebugMiddleware() {
+  return mailerConfig.type === 'maildev'
+}
+
 ex.component = { initialize }
 ex.mailer = mailer
 ex.createMailer = createMailer
-ex.expressMiddleware = expressMiddleware
+ex.getDebugExpressMiddleware = getDebugExpressMiddleware
+ex.canUseDebugMiddleware = canUseDebugMiddleware
