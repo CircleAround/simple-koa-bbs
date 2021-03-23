@@ -1,7 +1,7 @@
 function config() {
   return {
     from: '"SimpleBBS" <noreply@example.com>',
-    host: process.env.MAIL_HOST
+    host: process.env.MAILER_URL_HOST
   }
 }
 
