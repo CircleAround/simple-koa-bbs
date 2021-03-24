@@ -1,0 +1,9 @@
+FROM node:14
+
+ENV NODE_ENV=development
+ENV LANG ja_JP.UTF-8
+
+WORKDIR /app
+
+EXPOSE 3000
+CMD [ "npm", "run", "dev" ]

@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: ./Dockerfile.development
+    ports:
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+    depends_on:
+      - db
+      - redis
+    command: ./docker/wait-for-it.sh db:5432 -- ./docker/wait-for-it.sh redis:6379 -- npm run dev
+    env_file:
+      - ./.env
+    environment:
+      - PORT=3000
+      - DATABASE_URL=postgres://postgres:pass@db:5432/simplebbs_devleopment
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+
+  db:
+    image: postgres:12-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 'pass'
+    ports:
+      - 6686:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    restart: always
+    image: redis:alpine
+    ports:
+      - "6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  node_modules: {}
+  postgres_data: {}
+  redis_data: {}
