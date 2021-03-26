@@ -1,0 +1,4 @@
+#!/bin/bash
+set -eu
+
+npx nf start -j Procfile.development

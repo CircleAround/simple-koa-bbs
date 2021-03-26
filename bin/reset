@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 npx sequelize-cli db:drop --debug
 npx sequelize-cli db:create --debug
