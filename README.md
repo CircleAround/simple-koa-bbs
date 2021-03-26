@@ -4,20 +4,24 @@
 Node.js + Koa + Sequelize で作成した簡単な掲示板サンプルです。
 
 # 起動方法
-Redisをインストールしておいてください
+
+## ローカル（node-foreman）
+Redis、Postgresqlをインストールしておいてください。
+.envが読み込まれるので、.env.sampleをコピーして必要な場合には編集してください。
 
 ```
 npm install
 npm run reset
 npm run dev
 ```
-
-and access http://localhost:3000
+http://localhost:5000 へアクセスしてください。
+送ったメールの開発用確認は http://localhost:1080
 
 # Heroku
 Herokuボタンからインストールした場合メールのpluginはmailtrapなので、実際に送信はされません。Heorkuの管理画面からmailtrapの管理画面を開いて送信結果を確認できます。実運用を行いたい場合にはメール送信のアドオンはご自身で用意してください。
 
 # Docker
+.envが読み込まれるので、.env.sampleをコピーして必要な場合には編集してください。
 
 ```
 docker-compose build
@@ -28,7 +32,10 @@ $ exit
 docker-compose up
 ```
 
-全て跡形もなく消去
+http://localhost:3000 へアクセスしてください。
+送ったメールの開発用確認は http://localhost:1080
+
+全て跡形もなく消去したければ下記
 
 ```
 docker-compose down --rmi all --volumes --remove-orphans

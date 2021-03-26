@@ -7,13 +7,14 @@ services:
       context: .
       dockerfile: ./Dockerfile.development
     ports:
-      - "3000:3000"
+      - "${DOCKER_WEB_PORT}:3000"
     tty: true
     stdin_open: true
     depends_on:
+      - mail
       - db
       - redis
-    command: ./docker/wait-for-it.sh db:5432 -- ./docker/wait-for-it.sh redis:6379 -- npm run dev
+    command: ./docker/wait-for-it.sh db:5432 -- ./docker/wait-for-it.sh redis:6379 -- ./docker/wait-for-it.sh mail:1025 -- npx nodemon index.js
     env_file:
       - ./.env
     environment:
@@ -25,6 +26,20 @@ services:
       - .:/app
       - node_modules:/app/node_modules
 
+  mail:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.development
+    ports:
+      - "1025"
+      - "${DOCKER_MAILDEV_WEB_PORT}:1080"
+    command: npx maildev
+    env_file:
+      - ./.env
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    
   db:
     image: postgres:12-alpine
     restart: always
