@@ -17,10 +17,10 @@ npm run dev
 http://localhost:5000 へアクセスしてください。
 送ったメールの開発用確認は http://localhost:1080
 
-# Heroku
+## Heroku
 Herokuボタンからインストールした場合メールのpluginはmailtrapなので、実際に送信はされません。Heorkuの管理画面からmailtrapの管理画面を開いて送信結果を確認できます。実運用を行いたい場合にはメール送信のアドオンはご自身で用意してください。
 
-# Docker
+## Docker
 .envが読み込まれるので、.env.sampleをコピーして必要な場合には編集してください。
 
 ```
@@ -41,3 +41,14 @@ http://localhost:3000 へアクセスしてください。
 docker-compose down --rmi all --volumes --remove-orphans
 ```
 
+# テスト
+
+全てのテストを一回動かす。
+```
+npm test
+```
+
+ウォッチモードで起動。
+```
+npm test -- --watch
+```

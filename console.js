@@ -1,8 +1,9 @@
 const repl = require('repl')
 const boot = require('./config/boot')
+boot()
+
 const app = require('./app/')
 const fs = require('fs')
-boot()
 
 const initializer = require('./config/initializer')
 initializer().then(()=>{
