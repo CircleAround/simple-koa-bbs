@@ -1,16 +1,12 @@
 const extension = require('../../extensions/worker')
 
-const app = { 
-  dummy: { 
-    testFunction: jest.fn(()=> {})
-  }
-}
-extension.moduleOf = (moduleName) => { return app[moduleName] }
+jest.mock('../../app/')
+const app = require('../../app/')
 
 const validSingleParameterJob = {
   data: {
     methodName: 'testFunction',
-    params: { param1: 'param1Value' }
+    params: 5
   }
 }
 
@@ -20,7 +16,7 @@ test('shoulde call singleParameterFunction', () => {
   handler(validSingleParameterJob)
 
   expect(app.dummy.testFunction.mock.calls.length).toBe(1)
-  expect(app.dummy.testFunction.mock.calls).toContainEqual([{"param1": "param1Value"}])
+  expect(app.dummy.testFunction.mock.calls).toContainEqual([5])
 })
 
 test('shoulde throw exception when module not found', async () => {
@@ -43,7 +39,7 @@ test('shoulde throw exception when function not found', async () => {
     await handler({ 
       data: {
         methodName: 'unknownFunction',
-        params: { param1: 'param1Value' }
+        params: 5
       }    
     })
   } catch(e) {
