@@ -1,2 +1,2 @@
-release: ./bin/migrate
+release: ./bin/db/migrate
 web: npm start
