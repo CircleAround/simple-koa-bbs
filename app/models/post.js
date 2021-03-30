@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async latest(where = {}, limit = 5) {
-      return await Post.findAll({ where, order: [['createdAt', 'DESC'], ['id', 'DESC']], limit: limit, include: 'user' })
+      return await Post.findAll({ where, order: [['id', 'DESC']], limit: limit, include: 'user' })
     }
 
     titleLength() {
