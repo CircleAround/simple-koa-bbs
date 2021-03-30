@@ -1,10 +1,7 @@
 /node_modules/*
-*.sqlite3
 
 .env
 .env.test
 .vscode
-
-/docker/data/*
 
 /coverage
