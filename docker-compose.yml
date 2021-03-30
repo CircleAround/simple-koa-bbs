@@ -14,7 +14,7 @@ services:
       - mail
       - db
       - redis
-    command: ./docker/wait-for-it.sh db:5432 -- ./docker/wait-for-it.sh redis:6379 -- ./docker/wait-for-it.sh mail:1025 -- npx nodemon index.js
+    command: ./lib/wait-for-it.sh db:5432 -- ./lib/wait-for-it.sh redis:6379 -- ./lib/wait-for-it.sh mail:1025 -- npx nodemon index.js
     env_file:
       - ./.env
     environment:
