@@ -1,0 +1,9 @@
+#!/bin/bash
+set -eu
+
+# @see https://gist.github.com/mihow/9c7f559807069a03e302605691f85572
+set -a; source .env.test; set +a
+
+npx sequelize-cli db:drop --debug --env test
+npx sequelize-cli db:create --debug --env test
+npx sequelize-cli db:migrate --debug --env test
