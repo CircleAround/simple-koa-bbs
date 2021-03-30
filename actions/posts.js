@@ -19,7 +19,7 @@ const index = async ctx => {
 }
 
 const create = async ctx => {
-  const post = { userId: ctx.state.currentUser.id, ...ctx.request.body }
+  const post = { userId: ctx.state.currentUser.id, ...ctx.request.body } // TODO: mass assignment
   const entity = Post.build(post)
   try {
     await entity.save()

@@ -21,23 +21,24 @@ module.exports = (sequelize, DataTypes) => {
       return await bcrypt.hash(password, 10)
     }
 
+    static async createBase(params, options = {}){
+      const passwordHash = await this.generateHash(params.password)
+      return await this.create({ passwordHash, ...params }, options)
+    }
+
     static async register({ nickName, email, password }) {
-      const passwordHash = await this.generateHash(password)
-      
       // TODO: 重複は例外になるので、チェックを入れる
       // TODO: パスワードののハッシュは使わないべき。フォーマットちゃんとする
       const confirmationToken = await this.generateHash(Math.random().toString())
-      const user = await this.create(
-        {
-          nickName, email, password, passwordHash,
-          userConfirmations: [{
-            token: confirmationToken
-          }]
-        }, {
-          include: [ User.UserConfirmations ]
-        }
-      )
-      return user
+
+      return await this.createBase({
+        nickName, email, password,
+        userConfirmations: [{
+          token: confirmationToken
+        }]
+      }, {
+        include: [ User.UserConfirmations ]
+      })
     }
 
     static async authenticate({ email, password }) {

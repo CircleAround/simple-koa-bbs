@@ -13,13 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       this.user = this.belongsTo(models.user)
     }
 
-    // モデルへのstatic関数追加の確認
-    static async latest(where = {}) {
-      return await Post.findAll({ where, order: [['id', 'DESC']], limit: 5, include: 'user' })
+    static async latest(where = {}, limit = 5) {
+      return await Post.findAll({ where, order: [['createdAt', 'DESC'], ['id', 'DESC']], limit: limit, include: 'user' })
     }
 
     titleLength() {
-      return this.title.length // モデルへの関数追加の確認
+      return this.title.length
     }
   };
   Post.init({

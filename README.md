@@ -42,6 +42,7 @@ docker-compose down --rmi all --volumes --remove-orphans
 ```
 
 # テスト
+.env.testが読み込まれるので、.env.test.sampleをコピーして必要な場合には編集してください。
 
 全てのテストを一回動かす。
 ```
@@ -52,3 +53,7 @@ npm test
 ```
 npm test -- --watch
 ```
+ウォッチモードを起動する際に
+`fatal: ambiguous argument 'tests': both revision and filename`
+と言われた時にはgitのブランチ名がディレクトリ名と被っているので、ブランチ名を変更するなどして対応してください（ @see https://github.com/facebook/jest/issues/10149 ）
+
