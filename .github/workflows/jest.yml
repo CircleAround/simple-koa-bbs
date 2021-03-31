@@ -47,7 +47,6 @@ jobs:
             ${{ runner.OS }}-          
       - run: npm ci
       - run: npm run build --if-present
-      - run: npm test -- --silent --coverage --json --outputFile="jest.results.json"
       - name: Run test
         uses: mattallty/jest-github-action@v1.0.3
         env:
