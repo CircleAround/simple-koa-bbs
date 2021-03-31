@@ -47,21 +47,8 @@ jobs:
             ${{ runner.OS }}-          
       - run: npm ci
       - run: npm run build --if-present
-      - run: pwd
       - run: npm test -- --silent --coverage --json --outputFile="jest.results.json"
       - name: Run test
         uses: mattallty/jest-github-action@v1.0.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      # - run: npm test -- --silent --coverage
-      # - name: Upload test coverage artifact
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: coverage
-      #     path: coverage
-      # - name: Show coverage in comments
-      #   uses: ziishaned/jest-reporter-action@v0.0.1
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     test-command: "npm test -- --silent --coverage"
