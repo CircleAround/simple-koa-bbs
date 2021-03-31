@@ -87,6 +87,10 @@ class WorkerExtension {
     }
   }
 
+  async dispose() {
+    await Promise.all(Object.values(this.queues()).map((queue)=>{ return queue.close() }))
+  }
+
   // [protected]
   moduleOf(type) {
     return app[type]

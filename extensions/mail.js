@@ -103,3 +103,4 @@ function createMailer(options = {}) {
 ex.component = { initialize }
 ex.mailer = mailer
 ex.createMailer = createMailer
+ex.dispose = () => { transporter.close() }
