@@ -1,10 +1,9 @@
-const refleshModels = require('../support/reflesh_models')
-const postFixtures = require('../support/fixtures/post')
+const refleshModels = require('../../tests/support/reflesh_models')
+const postFixtures = require('../../tests/fixtures/post')
+const models = require('../../app/models')
 
-let models
 beforeAll(async done => {
-  models = await refleshModels(['user', 'post'])
-
+  await refleshModels(['user', 'post'])
   const user = await models.user.createBase({
     nickName: 'testuser',
     email: 'test@example.com',

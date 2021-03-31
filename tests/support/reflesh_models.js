@@ -5,5 +5,4 @@ module.exports = async (modelNames) => {
     console.log(`drop: ${modelName}`)
     await models[modelName].sync({ force: true })
   }
-  return models
 }

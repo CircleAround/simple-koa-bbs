@@ -11,7 +11,7 @@
     "dev": "bin/serv",
     "reset": "bin/reset",
     "console": "node --experimental-repl-await console.js",
-    "test": "jest --config tests/jest.config.js"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
