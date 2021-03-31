@@ -1,5 +1,5 @@
 
-const { createSequential } = require('../../support/fixture_helper')
+const { createSequential } = require('../support/fixture_helper')
 
 module.exports = {
   bulkCreate: async (user, count = 6) => {
