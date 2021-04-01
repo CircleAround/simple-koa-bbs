@@ -18,12 +18,6 @@ const startup = async () => {
   const _use = app.use
   app.use = x => _use.call(app, convert(x))
 
-  await middlewares(app)
-
-  app
-    .use(router.routes())
-    .use(router.allowedMethods())
-
   // @see https://github.com/koajs/koa/wiki/Error-Handling
   app.use(async (ctx, next) => {
     try {
@@ -36,6 +30,12 @@ const startup = async () => {
       ctx.app.emit('fatal error', err, ctx)
     }
   })
+
+  await middlewares(app)
+
+  app
+    .use(router.routes())
+    .use(router.allowedMethods())
 
   app.on('error', (err, ctx) => {
     // TODO: あとで実装する
