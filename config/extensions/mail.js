@@ -32,15 +32,19 @@ async function config() {
         pass: process.env.SENDGRID_PASSWORD
       }      
     }
-  } else {
-    // @see https://maildev.github.io/maildev/ Example Setups
-    return _config = {
-      host: process.env.SMTP_HOST || 'localhost',
-      debug: true,
-      port: 1025,
-      ignoreTLS: true
-    }
-  }  
+  } 
+
+  if(process.env.NODE_ENV === 'test') {
+    return _config = { mock: true }
+  }
+
+  // @see https://maildev.github.io/maildev/ Example Setups
+  return _config = {
+    host: process.env.SMTP_HOST || 'localhost',
+    debug: true,
+    port: 1025,
+    ignoreTLS: true
+  }
 }
 
 module.exports = config
