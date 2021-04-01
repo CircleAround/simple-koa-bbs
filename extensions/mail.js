@@ -15,6 +15,7 @@ async function initialize(options, configDir) {
 
   // create reusable transporter object using the default SMTP transport
   transporter = nodemailer.createTransport(options)
+  await transporter.verify()
   return transporter
 }
 

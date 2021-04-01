@@ -33,6 +33,21 @@ class WorkerExtension {
           let queueOption = queueOptions[name] || {}
           queueOption = { ...globalOptions, ...queueOption }
           const queue = redisUrl ? new Queue(name, redisUrl, queueOption) : new Queue(name, queueOption)
+          queue.on("error", (err) => {
+            console.error(`Queue error: ${name}`)
+            console.error(err)
+            // TODO: エラーハンドリングで通知するなどする？
+          })
+
+          queue.on('completed', async (job, actionId) => {
+            console.log(`Job completed with result Queue: ${name} job.id: ${job.id}; actionId: ${actionId}`);
+          })
+          queue.on("failed", (job, err) => {
+            console.error(`Queue failed: ${name}`)
+            console.error(job.id, err)
+            // TODO: エラーハンドリングで通知するなどする？
+          })
+
           initialQueues[name] = queue
         })
         this.#queues = initialQueues
@@ -44,12 +59,12 @@ class WorkerExtension {
   }
 
   queueNames() {
-    if (!this.#queues) { throw new Error('initialize is not complete') }
+    if (!this.#queues) { throw new Error('initialize is not completed') }
     return Object.keys(this.#queues)
   }
 
   queues() {
-    if (!this.#queues) { throw new Error('initialize is not complete') }
+    if (!this.#queues) { throw new Error('initialize is not completed') }
     return this.#queues
   }
 

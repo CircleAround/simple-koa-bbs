@@ -35,7 +35,7 @@ async function config() {
   } else {
     // @see https://maildev.github.io/maildev/ Example Setups
     return _config = {
-      type: 'maildev', // for checking boot proxy on expressRoutes.js
+      host: process.env.SMTP_HOST || 'localhost',
       debug: true,
       port: 1025,
       ignoreTLS: true

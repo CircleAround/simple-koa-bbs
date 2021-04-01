@@ -13,6 +13,12 @@ const routes = require('./config/routes')
 const expressRoutes = require('./config/expressRoutes')
 const middlewares = require('./config/middlewares')
 
+// TODO: 後でカスタム可能にする
+process.on('uncaughtException', function (err) {
+  console.error(err)
+  console.error(err.stack)
+})
+
 const startup = async () => {
   // for legacy type middleware
   const _use = app.use
@@ -47,12 +53,18 @@ const startup = async () => {
 }
 
 module.exports = async () => {
-  await initializer()
+  try {
+    await initializer()
 
-  const expressApp = express()
-  await startup()
-  await expressRoutes(expressApp)
-  expressApp.use(app.callback())
-
-  return expressApp
+    const expressApp = express()
+    await startup()
+    await expressRoutes(expressApp)
+    expressApp.use(app.callback())
+  
+    return expressApp
+  } catch (err) {
+    console.error('initialize error')
+    console.error(err.stack)
+    throw err
+  }
 }

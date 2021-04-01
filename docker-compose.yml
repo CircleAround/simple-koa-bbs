@@ -21,6 +21,7 @@ services:
       - PORT=3000
       - DATABASE_URL=postgres://postgres:pass@db:5432/simplebbs_devleopment
       - REDIS_URL=redis://redis:6379
+      - SMTP_HOST=mail
       - NODE_ENV=development
     volumes:
       - .:/app
