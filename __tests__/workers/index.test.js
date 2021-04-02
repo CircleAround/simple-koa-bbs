@@ -2,10 +2,12 @@ const startApp = require("../../app.js")
 const workers = require('../../app/workers')
 const mailers = require('../../app/mailers')
 const models = require('../../app/models')
+const refleshModels = require('../../tests/support/reflesh_models')
 
 let app
 beforeAll(async (done) => {
   app = await startApp()
+  await refleshModels(['user', 'userConfirmation'])
   done()
 })
 
