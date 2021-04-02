@@ -27,10 +27,16 @@ jobs:
           TZ: Asia/Tokyo
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
       
+      # @see https://docs.github.com/en/actions/guides/creating-redis-service-containers
       redis:
         image: redis
         ports:
           - "6379"
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5          
 
     strategy:
       matrix:
