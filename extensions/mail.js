@@ -23,6 +23,10 @@ class NodeMailerSender {
   dispose() {
     return this.#transporter.close()
   }
+
+  getSentLogs() {
+    throw new Error('Unimplemented')
+  }
 }
 
 class MockSender {
@@ -32,18 +36,21 @@ class MockSender {
 
   #sentLog = []
   sendMail(params) {
-    console.log(`MockSender#sendMail: ${params}`)
+    console.log(`MockSender#sendMail: ${JSON.stringify(params)}`)
     const log = {
       params,
-      messageId: Math.random()
+      messageId: `MAIL_ID-${Math.random().toString(36).substr(2, 9)}`
     }
     this.#sentLog.push(log)
     return log
   }
 
   dispose() { }
-}
 
+  getSentLogs() {
+    return this.#sentLog
+  }
+}
 
 let mailerConfig
 let sender
@@ -136,7 +143,8 @@ function createMailer(options = {}) {
   }
 
   return {
-    send
+    send,
+    getSentLogs: () => { return sender.getSentLogs() }
   }
 }
 

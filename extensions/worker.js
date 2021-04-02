@@ -1,14 +1,17 @@
+const EventEmitter = require('events')
+
 const Queue = require('bull')
 const bullBoard = require('bull-board')
 
 const { setQueues, BullAdapter } = require('bull-board')
 const app = require('../app/')
 
-const EventEmitter = require('events');
 class MockQueue extends EventEmitter {
   #handler
 
   async add(queueName, params) {
+    if(!params) { params = queueName }
+
     return this.#handler({
       data: params
     })
@@ -96,9 +99,9 @@ class WorkerExtension {
     }
 
     if (queueName) {
-      queue.add(queueName, { methodName, params })
+      return queue.add(queueName, { methodName, params })
     } else {
-      queue.add({ methodName, params })
+      return queue.add({ methodName, params })
     }
   }
 
