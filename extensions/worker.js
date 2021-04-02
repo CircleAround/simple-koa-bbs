@@ -136,7 +136,7 @@ class WorkerExtension {
   }
 
   createQueue(name, redisUrl, queueOption) {
-    if(process.env.NODE_ENV == 'test') {
+    if(queueOption.mock) {
       return new MockQueue()
     } else {
       return redisUrl ? new Queue(name, redisUrl, queueOption) : new Queue(name, queueOption)

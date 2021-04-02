@@ -3,7 +3,11 @@ async function config() {
     mailers: {}
   }
 
-  if(process.env.NODE_ENV == 'production') {
+  if(process.env.NODE_ENV === 'test') {
+    return { mock: true, queueOptions }
+  }
+
+  if(process.env.NODE_ENV === 'production') {
     if(!process.env.REDIS_URL) {
       throw new Error('REDIS_URL required')
     }
