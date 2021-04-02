@@ -3,10 +3,21 @@ const startApp = require("../../app.js")
 const models = require('../../app/models')
 const worker = require('../../extensions/worker')
 const mail = require('../../extensions/mail')
+const userFixtures = require('../../tests/fixtures/user')
+const refleshModels = require('../../tests/support/reflesh_models')
 
 let app
 beforeAll(async (done)=>{
+  await refleshModels(['user', 'post'])
+
   app = await startApp()
+
+  await userFixtures.createWithPosts({
+    nickName: 'testuser',
+    email: 'test@example.com',
+    password: 'password'
+  })
+  
   done()
 })
 
