@@ -4,23 +4,66 @@ const nodemailer = require("nodemailer")
 const ejs = require('ejs')
 const path = require('path')
 
-let mailerConfig
-let _configDir
-let transporter
+class NodeMailerSender {
+  static async create(options) {
+    const transporter = nodemailer.createTransport(options)
+    await transporter.verify()
+    return new NodeMailerSender(transporter)
+  }
 
-async function initialize(options, configDir) {
-  _configDir = configDir
-  
-  mailerConfig = await require(path.join(configDir, 'mailer'))()
+  #transporter
+  constructor(transporter) {
+    this.#transporter = transporter
+  }
 
-  // create reusable transporter object using the default SMTP transport
-  transporter = nodemailer.createTransport(options)
-  return transporter
+  sendMail(params) {
+    return this.#transporter.sendMail(params)
+  }
+
+  dispose() {
+    return this.#transporter.close()
+  }
+
+  getSentLogs() {
+    throw new Error('Unimplemented')
+  }
 }
 
-function mailer() {
-  if (!transporter) { throw new Error('mailer must initialze. call initMail()') }
-  return transporter
+class MockSender {
+  static async create(options) {
+    return new MockSender()
+  }
+
+  #sentLog = []
+  sendMail(params) {
+    console.log(`MockSender#sendMail: ${JSON.stringify(params)}`)
+    const log = {
+      params,
+      messageId: `MAIL_ID-${Math.random().toString(36).substr(2, 9)}`
+    }
+    this.#sentLog.push(log)
+    return log
+  }
+
+  dispose() { }
+
+  getSentLogs() {
+    return this.#sentLog
+  }
+}
+
+let mailerConfig
+let sender
+
+async function initialize(options, configDir) {
+  mailerConfig = await require(path.join(configDir, 'mailer'))()
+
+  if(options.mock) {
+    sender = await MockSender.create(options)
+  } else {
+    sender = await NodeMailerSender.create(options)
+  }
+  return sender
 }
 
 const render = (file, data) => {
@@ -45,8 +88,12 @@ const render = (file, data) => {
  */
 
 function createMailer(options = {}) {
+  if(sender === undefined) {
+    throw new Error('initialize is not completed')
+  }
+
   if(mailerConfig === undefined) {
-    throw new Error('initialize is not complete')
+    throw new Error('initialize is not completed')
   }
 
   // メール送信のオプションは 
@@ -90,16 +137,17 @@ function createMailer(options = {}) {
       console.error('[WARN]without text mailbody')
     }
 
-    const info = await mailer().sendMail(params)
+    const info = await sender.sendMail(params)
     console.info(`sent mail ${info.messageId}`)
     return info
   }
 
   return {
-    send
+    send,
+    getSentLogs: () => { return sender.getSentLogs() }
   }
 }
 
 ex.component = { initialize }
-ex.mailer = mailer
 ex.createMailer = createMailer
+ex.dispose = () => { sender.dispose() }

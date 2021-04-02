@@ -1,8 +1,30 @@
+const EventEmitter = require('events')
+
 const Queue = require('bull')
 const bullBoard = require('bull-board')
 
 const { setQueues, BullAdapter } = require('bull-board')
 const app = require('../app/')
+
+class MockQueue extends EventEmitter {
+  #handler
+
+  async add(queueName, params) {
+    if(!params) { params = queueName }
+
+    return this.#handler({
+      data: params
+    })
+  }
+
+  process(handler) {
+    this.#handler = handler
+  }
+
+  close() {
+    // nop
+  }
+}
 
 class WorkerExtension {
   #queues
@@ -30,9 +52,26 @@ class WorkerExtension {
         const { queueOptions, ...globalOptions } = options
         const names = Object.keys(queueOptions)
         names.forEach((name) => {
+          console.log(`create queue: ${name}`)
+
           let queueOption = queueOptions[name] || {}
           queueOption = { ...globalOptions, ...queueOption }
-          const queue = redisUrl ? new Queue(name, redisUrl, queueOption) : new Queue(name, queueOption)
+          const queue = this.createQueue(name, redisUrl, queueOption)
+          queue.on("error", (err) => {
+            console.error(`Queue error: ${name}`)
+            console.error(err)
+            // TODO: エラーハンドリングで通知するなどする？
+          })
+
+          queue.on('completed', async (job, actionId) => {
+            console.log(`Job completed with result Queue: ${name} job.id: ${job.id}; actionId: ${actionId}`);
+          })
+          queue.on("failed", (job, err) => {
+            console.error(`Queue failed: ${name}`)
+            console.error(job.id, err)
+            // TODO: エラーハンドリングで通知するなどする？
+          })
+
           initialQueues[name] = queue
         })
         this.#queues = initialQueues
@@ -44,12 +83,12 @@ class WorkerExtension {
   }
 
   queueNames() {
-    if (!this.#queues) { throw new Error('initialize is not complete') }
+    if (!this.#queues) { throw new Error('initialize is not completed') }
     return Object.keys(this.#queues)
   }
 
   queues() {
-    if (!this.#queues) { throw new Error('initialize is not complete') }
+    if (!this.#queues) { throw new Error('initialize is not completed') }
     return this.#queues
   }
 
@@ -60,9 +99,9 @@ class WorkerExtension {
     }
 
     if (queueName) {
-      queue.add(queueName, { methodName, params })
+      return queue.add(queueName, { methodName, params })
     } else {
-      queue.add({ methodName, params })
+      return queue.add({ methodName, params })
     }
   }
 
@@ -87,9 +126,21 @@ class WorkerExtension {
     }
   }
 
+  async dispose() {
+    await Promise.all(Object.values(this.queues()).map((queue)=>{ return queue.close() }))
+  }
+
   // [protected]
   moduleOf(type) {
     return app[type]
+  }
+
+  createQueue(name, redisUrl, queueOption) {
+    if(process.env.NODE_ENV == 'test') {
+      return new MockQueue()
+    } else {
+      return redisUrl ? new Queue(name, redisUrl, queueOption) : new Queue(name, queueOption)
+    }
   }
 
   async #initAutoProcess(type = 'mailers') {

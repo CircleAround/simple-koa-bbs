@@ -1,0 +1,5 @@
+#!/bin/bash
+set -eu
+
+export NODE_OPTIONS="--unhandled-rejections=strict"
+npx nodemon server.js

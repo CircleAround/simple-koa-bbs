@@ -14,14 +14,34 @@ services:
       - mail
       - db
       - redis
-    command: ./lib/wait-for-it.sh db:5432 -- ./lib/wait-for-it.sh redis:6379 -- ./lib/wait-for-it.sh mail:1025 -- npx nodemon index.js
+    command: ./lib/wait-for-it.sh db:5432 -- ./lib/wait-for-it.sh redis:6379 -- ./lib/wait-for-it.sh mail:1025 -- bin/dev_server
     env_file:
       - ./.env
     environment:
       - PORT=3000
       - DATABASE_URL=postgres://postgres:pass@db:5432/simplebbs_devleopment
       - REDIS_URL=redis://redis:6379
+      - SMTP_HOST=mail
       - NODE_ENV=development
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+
+  test:
+    container_name: test
+    build:
+      context: .
+      dockerfile: ./Dockerfile.development
+    tty: true
+    stdin_open: true
+    depends_on:
+      - db
+      - redis
+    command: ./lib/wait-for-it.sh db:5432 -- ./lib/wait-for-it.sh redis:6379 -- npm test
+    environment:
+      - DATABASE_URL=postgres://postgres:pass@db:5432/simplebbs_test
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=test
     volumes:
       - .:/app
       - node_modules:/app/node_modules

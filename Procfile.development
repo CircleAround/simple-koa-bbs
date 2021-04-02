@@ -1,2 +1,2 @@
-web: npx nodemon index.js
+web: bin/dev_server
 mail: npx maildev
