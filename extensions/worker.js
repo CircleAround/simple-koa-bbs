@@ -4,6 +4,25 @@ const bullBoard = require('bull-board')
 const { setQueues, BullAdapter } = require('bull-board')
 const app = require('../app/')
 
+const EventEmitter = require('events');
+class MockQueue extends EventEmitter {
+  #handler
+
+  async add(queueName, params) {
+    return this.#handler({
+      data: params
+    })
+  }
+
+  process(handler) {
+    this.#handler = handler
+  }
+
+  close() {
+    // nop
+  }
+}
+
 class WorkerExtension {
   #queues
 
@@ -30,9 +49,11 @@ class WorkerExtension {
         const { queueOptions, ...globalOptions } = options
         const names = Object.keys(queueOptions)
         names.forEach((name) => {
+          console.log(`create queue: ${name}`)
+
           let queueOption = queueOptions[name] || {}
           queueOption = { ...globalOptions, ...queueOption }
-          const queue = redisUrl ? new Queue(name, redisUrl, queueOption) : new Queue(name, queueOption)
+          const queue = this.createQueue(name, redisUrl, queueOption)
           queue.on("error", (err) => {
             console.error(`Queue error: ${name}`)
             console.error(err)
@@ -109,6 +130,14 @@ class WorkerExtension {
   // [protected]
   moduleOf(type) {
     return app[type]
+  }
+
+  createQueue(name, redisUrl, queueOption) {
+    if(process.env.NODE_ENV == 'test') {
+      return new MockQueue()
+    } else {
+      return redisUrl ? new Queue(name, redisUrl, queueOption) : new Queue(name, queueOption)
+    }
   }
 
   async #initAutoProcess(type = 'mailers') {

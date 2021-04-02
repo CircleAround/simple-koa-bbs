@@ -52,9 +52,9 @@ const startup = async () => {
   await routes(router)
 }
 
-module.exports = async () => {
+module.exports = async (options = {}) => {
   try {
-    await initializer()
+    await initializer(options)
 
     const expressApp = express()
     await startup()
