@@ -1,10 +1,10 @@
-const startApp = require('./app.js')
+const web = require('./web')
 
 const port = process.env.PORT || 3000
 
 const serv = async () => {
   try {
-    const app = await startApp()
+    const app = await web()
     app.listen(port, () => {
       console.log(`app listening at http://localhost:${port}`)
     })  

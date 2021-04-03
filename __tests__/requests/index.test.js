@@ -1,5 +1,5 @@
 const request = require("supertest")
-const startApp = require("../../app.js")
+const startApp = require("../../web.js")
 const models = require('../../app/models')
 const worker = require('../../extensions/worker')
 const mail = require('../../extensions/mail')
