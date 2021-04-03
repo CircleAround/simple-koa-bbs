@@ -121,7 +121,7 @@ class WorkerExtension {
         }
       })
 
-      console.log(`call ${moduleName}.${methodName}(${job.data.params})`)
+      console.log(`call ${moduleName}.${methodName}(${JSON.stringify(job.data.params)})`)
       await method(job.data.params)
     }
   }
