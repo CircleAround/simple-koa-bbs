@@ -3,6 +3,7 @@ const workers = require('../../app/workers')
 const mailers = require('../../app/mailers')
 const models = require('../../app/models')
 const refleshModels = require('../../tests/support/reflesh_models')
+const { dispose } = require('../../lib/autoload')
 
 let webApp
 beforeAll(async (done) => {
@@ -13,6 +14,7 @@ beforeAll(async (done) => {
 
 afterAll(async (done) => {
   await models.sequelize.close()
+  await dispose()
   done()
 })
 

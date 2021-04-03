@@ -1,16 +1,15 @@
 const request = require("supertest")
-const startApp = require("../../web.js")
+const web = require("../../web.js")
 const models = require('../../app/models')
-const worker = require('../../extensions/worker')
-const mail = require('../../extensions/mail')
 const userFixtures = require('../../tests/fixtures/user')
 const refleshModels = require('../../tests/support/reflesh_models')
+const { dispose } = require('../../lib/autoload')
 
-let app
+let webApp
 beforeAll(async (done)=>{
   await refleshModels(['user', 'post'])
 
-  app = await startApp()
+  webApp = await web()
 
   await userFixtures.createWithPosts({
     nickName: 'testuser',
@@ -22,16 +21,14 @@ beforeAll(async (done)=>{
 })
 
 afterAll(async (done) => {
-  // TODO: この辺りのdisposeを全部一度に呼べるようにする
   await models.sequelize.close()
-  await worker.dispose()
-  await mail.dispose()
+  await dispose()
   done()
 })
 
 describe("Test the root path", () => {
   test("It should response the GET method", done => {
-    request(app)
+    request(webApp)
       .get("/")
       .then(response => {
         expect(response.statusCode).toBe(200)
