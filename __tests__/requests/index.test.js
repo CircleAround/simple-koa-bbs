@@ -3,7 +3,7 @@ const web = require("../../web.js")
 const models = require('../../app/models')
 const userFixtures = require('../../tests/fixtures/user')
 const refleshModels = require('../../tests/support/reflesh_models')
-const { dispose } = require('../../lib/autoload')
+const { dispose } = require('../../lib/platform')
 
 let webApp
 beforeAll(async (done)=>{
