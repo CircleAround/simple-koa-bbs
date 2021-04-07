@@ -1,4 +1,6 @@
 #!/bin/bash
 set -eu
 
+source bin/auto_dotenv
+
 npx sequelize-cli db:migrate --debug
