@@ -37,9 +37,12 @@ class MockSender {
   #sentLog = []
   sendMail(params) {
     console.log(`MockSender#sendMail: ${JSON.stringify(params)}`)
+
+    // @see https://gist.github.com/gordonbrander/2230317
+    const random = Math.random().toString(36).substr(2, 9)
     const log = {
       params,
-      messageId: `MAIL_ID-${Math.random().toString(36).substr(2, 9)}`
+      messageId: `MAIL_ID-${random}`
     }
     this.#sentLog.push(log)
     return log

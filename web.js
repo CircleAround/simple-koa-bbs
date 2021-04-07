@@ -13,12 +13,6 @@ const routes = require('./config/routes')
 const expressRoutes = require('./config/expressRoutes')
 const middlewares = require('./config/middlewares')
 
-// TODO: 後でカスタム可能にする
-process.on('uncaughtException', function (err) {
-  console.error(err)
-  console.error(err.stack)
-})
-
 const startup = async () => {
   // for legacy type middleware
   const _use = app.use

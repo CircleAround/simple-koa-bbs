@@ -1,15 +1,14 @@
 const refleshModels = require('../../tests/support/reflesh_models')
-const postFixtures = require('../../tests/fixtures/post')
+const userFixtures = require('../../tests/fixtures/user')
 const models = require('../../app/models')
 
 beforeAll(async done => {
   await refleshModels(['user', 'post'])
-  const user = await models.user.createBase({
+  await userFixtures.createWithPosts({
     nickName: 'testuser',
     email: 'test@example.com',
     password: 'password'
   })
-  await postFixtures.bulkCreate(user, 6)
 
   done()
 })
@@ -31,9 +30,9 @@ describe('.latest', () => {
     const posts = await models.post.latest()
     expect(posts.length).toBe(5)
 
-    expect(posts[0].id > posts[1].id).toBe(true)
-    expect(posts[1].id > posts[2].id).toBe(true)
-    expect(posts[2].id > posts[3].id).toBe(true)
+    expect(posts[0].id).toBeGreaterThan(posts[1].id)
+    expect(posts[1].id).toBeGreaterThan(posts[2].id)
+    expect(posts[2].id).toBeGreaterThan(posts[3].id)
   })
 
   test('取得件数を指定できること', async () => {

@@ -1,6 +1,6 @@
 'use strict';
 
-const db = require('../app/models/')
+const db = require('../../app/models')
 const User = db.user
 
 module.exports = {

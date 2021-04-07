@@ -1,6 +1,6 @@
 const path = require('path')
 
-const { initialize } = require('../lib/autoload')
+const { initialize } = require('../lib/platform')
 
 module.exports = async (options = {}) => {
   return await initialize(

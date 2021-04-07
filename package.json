@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "bin/serv",
-    "reset": "bin/reset",
+    "reset": "bin/db/reset",
     "console": "node --experimental-repl-await console.js",
     "test": "jest"
   },
@@ -18,7 +18,6 @@
   "dependencies": {
     "@koa/router": "^9.4.0",
     "aws-sdk": "^2.864.0",
-    "babel-register": "^6.26.0",
     "bcrypt": "^5.0.0",
     "bull": "^3.20.1",
     "bull-board": "^1.4.2",
@@ -45,6 +44,7 @@
     "sequelize-cli": "^6.2.0"
   },
   "devDependencies": {
+    "@babel/register": "^7.13.14",
     "@ms2sato/maildev": "^1.1.0",
     "dotenv": "^8.2.0",
     "foreman": "^3.0.1",
