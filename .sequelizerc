@@ -1,5 +1,5 @@
 // @see https://sequelize.org/master/manual/migrations.html `Using Babel`
-require("babel-register");
+require("@babel/register");
 
 const path = require('path');
 
