@@ -6,5 +6,7 @@ if [ ${NODE_ENV:-"development"} = "test" ] ; then
   ENV_FILE=".env.test"
 fi
 
-# @see https://gist.github.com/mihow/9c7f559807069a03e302605691f85572
-set -a; source ${ENV_FILE}; set +a
+if [ -e $ENV_FILE ]; then
+  # @see https://gist.github.com/mihow/9c7f559807069a03e302605691f85572
+  set -a; source ${ENV_FILE}; set +a
+fi
