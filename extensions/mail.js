@@ -3,6 +3,7 @@ const ex = module.exports = {}
 const nodemailer = require("nodemailer")
 const ejs = require('ejs')
 const path = require('path')
+const random = require('../lib/random')
 
 class NodeMailerSender {
   static async create(options) {
@@ -38,11 +39,9 @@ class MockSender {
   sendMail(params) {
     console.log(`MockSender#sendMail: ${JSON.stringify(params)}`)
 
-    // @see https://gist.github.com/gordonbrander/2230317
-    const random = Math.random().toString(36).substr(2, 9)
     const log = {
       params,
-      messageId: `MAIL_ID-${random}`
+      messageId: `MAIL_ID-${random()}`
     }
     this.#sentLog.push(log)
     return log
