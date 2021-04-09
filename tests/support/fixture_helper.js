@@ -1,12 +1,33 @@
 const models = require('../../app/models')
 
-let globalCounter = 0
-module.exports = {
-  createSequential: async (modelName, optionCallback, count = 3) => {
-    const options = []
-    for(let i = 0; i < count; ++i) {
-      options.push(optionCallback(++globalCounter))
+class FixtureHelper {
+  static globalCounter = {}
+
+  static increament(modelName) {
+    if(!FixtureHelper.globalCounter[modelName]) {
+      FixtureHelper.globalCounter[modelName] = 0
     }
-    await models[modelName].bulkCreate(options)
+    return FixtureHelper.globalCounter[modelName]++
+  }
+
+  #modelName
+  #optionCallback
+  constructor(modelName, optionCallback) {
+    this.#modelName = modelName
+    this.#optionCallback = optionCallback
+  }
+
+  next(options) {
+    return this.#optionCallback(FixtureHelper.increament(this.#modelName), options)
+  }
+
+  async bulkCreate(count = 3, options) {
+    const params = []
+    for(let i = 0; i < count; ++i) {
+      params.push(this.next(options))
+    }
+    await models[this.#modelName].bulkCreate(params)
   }
 }
+
+module.exports = FixtureHelper

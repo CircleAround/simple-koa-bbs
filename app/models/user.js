@@ -1,6 +1,7 @@
 'use strict';
 
 const bcrypt = require('bcrypt')
+const random = require('../../lib/random')
 
 const {
   Model, ValidationError, ValidationErrorItem
@@ -28,8 +29,7 @@ module.exports = (sequelize, DataTypes) => {
 
     static async register({ nickName, email, password }) {
       // TODO: 重複は例外になるので、チェックを入れる
-      // TODO: パスワードののハッシュは使わないべき。フォーマットちゃんとする
-      const confirmationToken = await this.generateHash(Math.random().toString())
+      const confirmationToken = random()
 
       return await this.createBase({
         nickName, email, password,
