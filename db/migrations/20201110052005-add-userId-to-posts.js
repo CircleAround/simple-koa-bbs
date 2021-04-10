@@ -1,15 +1,15 @@
 'use strict';
 
-const fkName = 'userId_Posts_fk'
+const fkName = 'user_id_posts_fk'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('posts', 'userId', { 
+    await queryInterface.addColumn('posts', 'user_id', { 
       type: Sequelize.INTEGER,
       allowNull: false
     })
     await queryInterface.addConstraint('posts', { 
-      fields: ['userId'], 
+      fields: ['user_id'], 
       type: 'foreign key',
       name: fkName,
       references: {
@@ -23,6 +23,6 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     await queryInterface.removeConstraint('posts', fkName)
     await queryInterface.removeIndex('posts', fkName)
-    await queryInterface.removeColumn('posts', 'userId')
+    await queryInterface.removeColumn('posts', 'user_id')
   }
 };

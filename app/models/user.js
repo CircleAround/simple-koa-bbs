@@ -14,8 +14,16 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.posts = this.hasMany(models.post)
-      this.UserConfirmations = this.hasMany(models.userConfirmation)
+      this.Posts = this.hasMany(models.post, {
+        foreignKey: {
+          allowNull: false
+        }
+      })
+      this.UserConfirmations = this.hasMany(models.userConfirmation, {
+        foreignKey: {
+          allowNull: false
+        }
+      })
     }
 
     static async generateHash(password) {
@@ -91,6 +99,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'user',
+    underscored: true
   });
   return User;
 };

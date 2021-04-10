@@ -1,6 +1,11 @@
 #!/bin/bash
 set -eu
 
+if [ ${DOCKER:-"false"} = "true" ] ; then
+  echo '> auto_dotenv: ignore dotenv on booting on Docker'
+  return
+fi
+
 ENV_FILE=".env"
 if [ ${NODE_ENV:-"development"} = "test" ] ; then
   ENV_FILE=".env.test"

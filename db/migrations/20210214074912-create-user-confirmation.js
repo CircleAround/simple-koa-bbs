@@ -1,6 +1,6 @@
 'use strict';
 
-const fkName = 'userId_user_confirmations_fk'
+const fkName = 'user_id_user_confirmations_fk'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -11,27 +11,27 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: {
+      user_id: {
         type: Sequelize.INTEGER
       },
       token: {
         type: Sequelize.STRING
       },
-      confirmedAt: {
+      confirmed_at: {
         type: Sequelize.DATE
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
 
     await queryInterface.addConstraint('user_confirmations', { 
-      fields: ['userId'], 
+      fields: ['user_id'], 
       type: 'foreign key',
       name: fkName,
       references: {
