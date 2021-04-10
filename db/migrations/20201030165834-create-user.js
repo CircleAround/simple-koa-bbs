@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      nickName: {
+      nick_name: {
         allowNull: false,
         unique: true,
         type: Sequelize.STRING
@@ -18,15 +18,15 @@ module.exports = {
         unique: true,
         type: Sequelize.STRING
       },
-      passwordHash: {
+      password_hash: {
         allowNull: false,
         type: Sequelize.TEXT
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }

@@ -6,23 +6,23 @@ module.exports = {
       {
         title: 'Test1',
         body: "これはテストです\nああああ",
-        userId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        user_id: 1,
+        created_at: new Date(),
+        updated_at: new Date()
       },
       {
         title: 'Test2',
         body: "これはテスト2です\nああああ",
-        userId: 2,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        user_id: 2,
+        created_at: new Date(),
+        updated_at: new Date()
       },
       {
         title: 'Test3',
         body: "これはテスト3です\nああああ",
-        userId: 2,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        user_id: 2,
+        created_at: new Date(),
+        updated_at: new Date()
       }
     ], {});
   },
