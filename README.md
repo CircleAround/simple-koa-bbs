@@ -25,7 +25,7 @@ Herokuボタンからインストールした場合メールのpluginはmailtrap
 
 ```
 docker-compose build
-docker-compose run app bin/bash
+docker-compose run app /bin/bash
 $ npm install
 $ npm run reset
 $ exit
