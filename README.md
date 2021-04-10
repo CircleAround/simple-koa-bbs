@@ -57,3 +57,22 @@ npm test -- --watch
 `fatal: ambiguous argument 'tests': both revision and filename`
 と言われた時にはgitのブランチ名がディレクトリ名と被っているので、ブランチ名を変更するなどして対応してください（ @see https://github.com/facebook/jest/issues/10149 ）
 
+# REPL
+アプリケーションの機能を手軽に呼び出せるREPLを作成してあります。
+
+```
+npm run dev
+```
+
+した上で（メールサーバが立ち上がっていないとエラーになる為）、別のターミナルで
+
+```
+npm run console
+```
+
+を実行してください。以下のような機能があります。
+
+- app ディレクトリ配下のモジュールを自動でロードします
+- 一度REPLを落としても履歴が残ります
+
+
