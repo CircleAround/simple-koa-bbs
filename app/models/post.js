@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.user = this.belongsTo(models.user)
+      this.User = this.belongsTo(models.user)
     }
 
     static async latest(where = {}, limit = 5) {
@@ -35,17 +35,11 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: true
       }
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        notEmpty: true
-      }
     }
   }, {
     sequelize,
     modelName: 'post',
+    underscored: true
   });
   return Post;
 };

@@ -19,13 +19,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   UserConfirmation.init({
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        notEmpty: true
-      }
-    },
     token: { 
       type: DataTypes.STRING,
       allowNull: false,
@@ -39,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'userConfirmation',
-    tableName: 'user_confirmations'
+    underscored: true
   });
   return UserConfirmation;
 };

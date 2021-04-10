@@ -3,7 +3,7 @@ const userFixtures = require('../../tests/fixtures/user')
 const models = require('../../app/models')
 
 beforeAll(async done => {
-  await refleshModels(['user', 'userConfirmation'])
+  await refleshModels(['user', 'userConfirmation', 'post'])
   done()
 })
 
@@ -26,5 +26,18 @@ describe('.register', () => {
     expect(newUserConfirmation.userId).toBe(newUser.id)
     expect(newUserConfirmation.token).not.toBeNull()
     expect(newUserConfirmation.confirmedAt).toBeNull()
+
+    const user = await newUserConfirmation.getUser()
+    expect(user.id).toBe(newUser.id)
   })
 })
+
+describe('#getPosts', () => {
+  test('関連しているpostが取得できること', async () => {
+    const user = await userFixtures.createWithPosts(3)
+    const posts = await user.getPosts()
+
+    expect(posts.length).toBe(3)
+  })
+})
+

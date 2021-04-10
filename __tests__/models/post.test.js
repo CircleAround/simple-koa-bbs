@@ -4,11 +4,7 @@ const models = require('../../app/models')
 
 beforeAll(async done => {
   await refleshModels(['user', 'post'])
-  await userFixtures.createWithPosts({
-    nickName: 'testuser',
-    email: 'test@example.com',
-    password: 'password'
-  })
+  await userFixtures.createWithPosts()
 
   done()
 })
@@ -19,7 +15,7 @@ afterAll(async done => {
 })
 
 describe('#title', () => {
-  test('タイトルの長さが取得できる事', async () => {
+  test('タイトルの長さが取得できること', async () => {
     const post = models.post.build({ title: 'サンプル', body: 'テスト本文' })
     expect(post.titleLength()).toBe(4)
   })
@@ -48,4 +44,13 @@ describe('.latest', () => {
     expect(post.title).toBe('テスト3')
   })
 })
+
+describe('#getUser', () => {
+  test('関連しているユーザが取得できること', async () => {
+    const post = await models.post.findOne()
+    const user = await post.getUser()
+    expect(user).not.toBeNull()
+  })
+})
+
 
