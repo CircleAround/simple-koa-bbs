@@ -1,8 +1,8 @@
 #!/bin/bash
 set -eu
 
-if [ ${DOCKER:-"false"} = "true" ] ; then
-  echo '> auto_dotenv: ignore dotenv on booting on Docker'
+if [ ${AUTO_DOTENV:-"true"} = "false" ] ; then
+  echo '> auto_dotenv: skipped [AUTO_DOTENV=false]'
   return
 fi
 
