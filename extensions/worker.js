@@ -50,29 +50,29 @@ class WorkerExtension {
 
         const initialQueues = {}
         const globalOptions = options
-        const names = Object.keys(queueOptions)
-        names.forEach((name) => {
-          console.log(`create queue: ${name}`)
+        const queueNames = Object.keys(queueOptions)
+        queueNames.forEach((queueName) => {
+          console.log(`create queue: ${queueName}`)
 
-          let queueOption = queueOptions[name] || {}
+          let queueOption = queueOptions[queueName] || {}
           queueOption = { ...globalOptions, ...queueOption }
-          const queue = mock ? new MockQueue() : this.createQueue(name, redisUrl, queueOption)
+          const queue = mock ? new MockQueue() : this.createQueue(queueName, redisUrl, queueOption)
           queue.on("error", (err) => {
-            console.error(`Queue error: ${name}`)
+            console.error(`Queue error: ${queueName}`)
             console.error(err)
             // TODO: エラーハンドリングで通知するなどする？
           })
 
           queue.on('completed', async (job, actionId) => {
-            console.log(`Job completed with result Queue: ${name} job.id: ${job.id}; actionId: ${actionId}`);
+            console.log(`Job completed with result Queue: ${queueName} job.id: ${job.id}; actionId: ${actionId}`);
           })
           queue.on("failed", (job, err) => {
-            console.error(`Queue failed: ${name}`)
+            console.error(`Queue failed: ${queueName}`)
             console.error(job.id, err)
             // TODO: エラーハンドリングで通知するなどする？
           })
 
-          initialQueues[name] = queue
+          initialQueues[queueName] = queue
         })
         this.#queues = initialQueues
         setQueues(Object.keys(this.#queues).map((name) => { return new BullAdapter(this.#queues[name]) }))
@@ -96,16 +96,16 @@ class WorkerExtension {
     return this.#queues
   }
 
-  enqueue(type, methodName, params, queueName) {
+  enqueue(type, methodName, args, processorName) {
     const queue = this.queues()[type]
     if (!queue) {
       throw new Error(`Queue named "${type}" is not found`)
     }
 
-    if (queueName) {
-      return queue.add(queueName, { methodName, params })
+    if (processorName) {
+      return queue.add(processorName, { methodName, args })
     } else {
-      return queue.add({ methodName, params })
+      return queue.add({ methodName, args })
     }
   }
 
@@ -125,8 +125,13 @@ class WorkerExtension {
         }
       })
 
-      console.log(`call ${moduleName}.${methodName}(${JSON.stringify(job.data.params)})`)
-      await method(job.data.params)
+      if(job.data.args instanceof Array) {
+        console.log(`call ${moduleName}.${methodName}(${job.data.args.map(arg=>JSON.stringify(arg)).join(',')})`)
+        await method.apply(undefined, job.data.args)
+      } else {
+        console.log(`call ${moduleName}.${methodName}(${JSON.stringify(job.data.args)})`)
+        await method(job.data.args)
+      }
     }
   }
 
