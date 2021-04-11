@@ -57,10 +57,10 @@ class MockSender {
 let mailerConfig
 let sender
 
-async function initialize(options, configDir) {
+async function initialize({ options, ...params }, configDir) {
   mailerConfig = await require(path.join(configDir, 'mailer'))()
 
-  if(options.mock) {
+  if(params.mock) {
     sender = await MockSender.create(options)
   } else {
     sender = await NodeMailerSender.create(options)

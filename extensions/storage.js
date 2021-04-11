@@ -4,17 +4,17 @@ const AWS = require('aws-sdk');
 const fs = require('fs')
 
 class S3Adapter {
-  constructor(config) {
-    const defaultConfig = {
+  constructor(options) {
+    const defaultOptions = {
       apiVersion: '2006-03-01',
       region: process.env.AWS_DEFAULT_REGION,
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     }
 
-    config = { defaultConfig, ...config }
+    options = { ...defaultOptions, ...options }
 
-    this.s3 = new AWS.S3(config);
+    this.s3 = new AWS.S3(options);
   }
 
   async saveFile(srcPath, key, options = {}) {
@@ -44,8 +44,8 @@ class S3Adapter {
 
 let adapter
 
-function initialize(config) {
-  adapter = new S3Adapter(config)
+function initialize({options}) {
+  adapter = new S3Adapter(options)
 }
 
 ex.component = { initialize }

@@ -41,7 +41,7 @@ class WorkerExtension {
       // QueueOptionsはBullオプションと同じ形式で、デフォルトのオプションをキューごとに上書きできる
       // optionsを配列で渡した場合、0番目がRedisのURL扱い、1番目がオプション扱いされる
 
-      initialize: async (options) => {
+      initialize: async ({ options, queueOptions, mock }) => {
         let redisUrl
         // TODO: 配列の場合にはRedisURLとオプションの組み合わせ Bullに合わせたが将来は変えたい
         if (options instanceof Array) {
@@ -49,14 +49,14 @@ class WorkerExtension {
         }
 
         const initialQueues = {}
-        const { queueOptions, ...globalOptions } = options
+        const globalOptions = options
         const names = Object.keys(queueOptions)
         names.forEach((name) => {
           console.log(`create queue: ${name}`)
 
           let queueOption = queueOptions[name] || {}
           queueOption = { ...globalOptions, ...queueOption }
-          const queue = this.createQueue(name, redisUrl, queueOption)
+          const queue = mock ? new MockQueue() : this.createQueue(name, redisUrl, queueOption)
           queue.on("error", (err) => {
             console.error(`Queue error: ${name}`)
             console.error(err)
@@ -136,11 +136,7 @@ class WorkerExtension {
   }
 
   createQueue(name, redisUrl, queueOption) {
-    if(queueOption.mock) {
-      return new MockQueue()
-    } else {
-      return redisUrl ? new Queue(name, redisUrl, queueOption) : new Queue(name, queueOption)
-    }
+    return redisUrl ? new Queue(name, redisUrl, queueOption) : new Queue(name, queueOption)
   }
 
   async #initAutoProcess(type = 'mailers') {

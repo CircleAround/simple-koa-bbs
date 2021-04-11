@@ -1,10 +1,11 @@
-async function config() {
+module.exports = async function () {
+  const options = {}
   const queueOptions = {
     mailers: {}
   }
 
   if(process.env.NODE_ENV === 'test') {
-    return { mock: true, queueOptions }
+    return { mock: true, options, queueOptions }
   }
 
   if(process.env.NODE_ENV === 'production') {
@@ -14,11 +15,12 @@ async function config() {
   }
 
   if(process.env.REDIS_URL) {
-    return [process.env.REDIS_URL, { queueOptions }] // [REDIS_URL, options]
+    return {
+      options: [process.env.REDIS_URL, options], // [REDIS_URL, options]
+      queueOptions 
+    } 
   }
   
   //return ['redis://localhost:6379', { queueOptions }]
-  return { queueOptions }
+  return { options, queueOptions }
 }
-
-module.exports = config
