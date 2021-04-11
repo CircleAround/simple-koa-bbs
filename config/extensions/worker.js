@@ -1,7 +1,9 @@
 module.exports = async function () {
   const options = {}
   const queueOptions = {
-    mailers: {}
+    mailers: {
+      autoProcessor: true
+    }
   }
 
   if(process.env.NODE_ENV === 'test') {

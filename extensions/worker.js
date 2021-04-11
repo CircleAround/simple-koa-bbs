@@ -72,12 +72,14 @@ class WorkerExtension {
             // TODO: エラーハンドリングで通知するなどする？
           })
 
+          if(queueOption.autoProcessor) {
+            queue.process(this.getAutoProcessHandler(queueName))
+          }
+
           initialQueues[queueName] = queue
         })
         this.#queues = initialQueues
         setQueues(Object.keys(this.#queues).map((name) => { return new BullAdapter(this.#queues[name]) }))
-
-        await this.#initAutoProcess()
       },
 
       dispose: async () => {
@@ -142,10 +144,6 @@ class WorkerExtension {
 
   createQueue(name, redisUrl, queueOption) {
     return redisUrl ? new Queue(name, redisUrl, queueOption) : new Queue(name, queueOption)
-  }
-
-  async #initAutoProcess(type = 'mailers') {
-    this.queues()[type].process(this.getAutoProcessHandler(type))
   }
 }
 
