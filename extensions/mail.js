@@ -150,6 +150,10 @@ function createMailer(options = {}) {
   }
 }
 
-ex.component = { initialize }
+function dispose() {
+  sender.dispose()
+}
+
+ex.component = { initialize, dispose }
 ex.createMailer = createMailer
-ex.dispose = () => { sender.dispose() }
+

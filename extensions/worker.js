@@ -78,6 +78,10 @@ class WorkerExtension {
         setQueues(Object.keys(this.#queues).map((name) => { return new BullAdapter(this.#queues[name]) }))
 
         await this.#initAutoProcess()
+      },
+
+      dispose: async () => {
+        await Promise.all(Object.values(this.queues()).map((queue)=>{ return queue.close() }))
       }
     }
   }
@@ -124,10 +128,6 @@ class WorkerExtension {
       console.log(`call ${moduleName}.${methodName}(${JSON.stringify(job.data.params)})`)
       await method(job.data.params)
     }
-  }
-
-  async dispose() {
-    await Promise.all(Object.values(this.queues()).map((queue)=>{ return queue.close() }))
   }
 
   // [protected]

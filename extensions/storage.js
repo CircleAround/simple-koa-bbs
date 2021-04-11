@@ -50,6 +50,6 @@ function initialize(config) {
 
 ex.component = { initialize }
 ex.get = function(_ = '__default') { return adapter }
-ex.dispose = async () => {}
+
 
 
