@@ -6,7 +6,7 @@ const app = require('../../app/')
 const validSingleParameterJob = {
   data: {
     methodName: 'testFunction',
-    params: 5
+    args: 5
   }
 }
 
@@ -39,7 +39,7 @@ test('shoulde throw exception when function not found', async () => {
     await handler({ 
       data: {
         methodName: 'unknownFunction',
-        params: 5
+        args: 5
       }    
     })
   } catch(e) {

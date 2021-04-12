@@ -41,7 +41,7 @@ class WorkerExtension {
       // QueueOptionsはBullオプションと同じ形式で、デフォルトのオプションをキューごとに上書きできる
       // optionsを配列で渡した場合、0番目がRedisのURL扱い、1番目がオプション扱いされる
 
-      initialize: async (options) => {
+      initialize: async ({ options, queueOptions, mock }) => {
         let redisUrl
         // TODO: 配列の場合にはRedisURLとオプションの組み合わせ Bullに合わせたが将来は変えたい
         if (options instanceof Array) {
@@ -49,35 +49,41 @@ class WorkerExtension {
         }
 
         const initialQueues = {}
-        const { queueOptions, ...globalOptions } = options
-        const names = Object.keys(queueOptions)
-        names.forEach((name) => {
-          console.log(`create queue: ${name}`)
+        const globalOptions = options
+        const queueNames = Object.keys(queueOptions)
+        queueNames.forEach((queueName) => {
+          console.log(`create queue: ${queueName}`)
 
-          let queueOption = queueOptions[name] || {}
+          let queueOption = queueOptions[queueName] || {}
           queueOption = { ...globalOptions, ...queueOption }
-          const queue = this.createQueue(name, redisUrl, queueOption)
+          const queue = mock ? new MockQueue() : this.createQueue(queueName, redisUrl, queueOption)
           queue.on("error", (err) => {
-            console.error(`Queue error: ${name}`)
+            console.error(`Queue error: ${queueName}`)
             console.error(err)
             // TODO: エラーハンドリングで通知するなどする？
           })
 
           queue.on('completed', async (job, actionId) => {
-            console.log(`Job completed with result Queue: ${name} job.id: ${job.id}; actionId: ${actionId}`);
+            console.log(`Job completed with result Queue: ${queueName} job.id: ${job.id}; actionId: ${actionId}`);
           })
           queue.on("failed", (job, err) => {
-            console.error(`Queue failed: ${name}`)
+            console.error(`Queue failed: ${queueName}`)
             console.error(job.id, err)
             // TODO: エラーハンドリングで通知するなどする？
           })
 
-          initialQueues[name] = queue
+          if(queueOption.autoProcessor) {
+            queue.process(this.getAutoProcessHandler(queueName))
+          }
+
+          initialQueues[queueName] = queue
         })
         this.#queues = initialQueues
         setQueues(Object.keys(this.#queues).map((name) => { return new BullAdapter(this.#queues[name]) }))
+      },
 
-        await this.#initAutoProcess()
+      dispose: async () => {
+        await Promise.all(Object.values(this.queues()).map((queue)=>{ return queue.close() }))
       }
     }
   }
@@ -92,16 +98,16 @@ class WorkerExtension {
     return this.#queues
   }
 
-  enqueue(type, methodName, params, queueName) {
+  enqueue(type, methodName, args, processorName) {
     const queue = this.queues()[type]
     if (!queue) {
       throw new Error(`Queue named "${type}" is not found`)
     }
 
-    if (queueName) {
-      return queue.add(queueName, { methodName, params })
+    if (processorName) {
+      return queue.add(processorName, { methodName, args })
     } else {
-      return queue.add({ methodName, params })
+      return queue.add({ methodName, args })
     }
   }
 
@@ -121,13 +127,14 @@ class WorkerExtension {
         }
       })
 
-      console.log(`call ${moduleName}.${methodName}(${JSON.stringify(job.data.params)})`)
-      await method(job.data.params)
+      if(job.data.args instanceof Array) {
+        console.log(`call ${moduleName}.${methodName}(${job.data.args.map(arg=>JSON.stringify(arg)).join(',')})`)
+        await method.apply(undefined, job.data.args)
+      } else {
+        console.log(`call ${moduleName}.${methodName}(${JSON.stringify(job.data.args)})`)
+        await method(job.data.args)
+      }
     }
-  }
-
-  async dispose() {
-    await Promise.all(Object.values(this.queues()).map((queue)=>{ return queue.close() }))
   }
 
   // [protected]
@@ -136,15 +143,7 @@ class WorkerExtension {
   }
 
   createQueue(name, redisUrl, queueOption) {
-    if(queueOption.mock) {
-      return new MockQueue()
-    } else {
-      return redisUrl ? new Queue(name, redisUrl, queueOption) : new Queue(name, queueOption)
-    }
-  }
-
-  async #initAutoProcess(type = 'mailers') {
-    this.queues()[type].process(this.getAutoProcessHandler(type))
+    return redisUrl ? new Queue(name, redisUrl, queueOption) : new Queue(name, queueOption)
   }
 }
 
