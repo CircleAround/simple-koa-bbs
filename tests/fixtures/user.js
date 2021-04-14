@@ -11,6 +11,11 @@ module.exports = {
     return helper.next()
   },
 
+  create: async function(options) {
+    options = { ...this.next(), ...options }
+    return await models.user.createBase(options)
+  },
+
   createWithPosts: async function (count = 6) {
     const user = await models.user.createBase(this.next())
     await postFixtures.bulkCreate(user, count)  

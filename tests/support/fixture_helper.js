@@ -21,12 +21,17 @@ class FixtureHelper {
     return this.#optionCallback(FixtureHelper.increament(this.#modelName), options)
   }
 
+  async create(options = {}) {
+    options = {...this.next(), ...options}
+    return await models[this.#modelName].create(options)
+  }
+
   async bulkCreate(count = 3, options) {
     const params = []
     for(let i = 0; i < count; ++i) {
       params.push(this.next(options))
     }
-    await models[this.#modelName].bulkCreate(params)
+    return await models[this.#modelName].bulkCreate(params)
   }
 }
 
