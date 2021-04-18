@@ -1,6 +1,6 @@
-async function login(session, user) {
+async function login(agent, user) {
   return new Promise((resolve, reject)=>{
-    session
+    agent
       .post('/sessions')
       .send({
         email: user.email,

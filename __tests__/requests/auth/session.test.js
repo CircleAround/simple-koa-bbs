@@ -44,18 +44,18 @@ it('ログインできること', async (done) => {
 })
 
 describe('ログイン済みの場合', () => {
-  let session
+  let agent
 
   beforeEach(async (done)=>{
-    session = supertest.agent(webApp)
+    agent = supertest.agent(webApp)
 
     const user = await models.user.findOne()
-    await login(session, user)
+    await login(agent, user)
     done()
   })
 
   test('ユーザ専用ページにアクセスできること', (done) => {
-    session
+    agent
       .get('/profile')
       .expect(200)
       .end(done)
