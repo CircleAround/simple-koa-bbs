@@ -24,42 +24,86 @@ afterAll(async (done) => {
   done()
 })
 
-it('ログイン前にアクセスすると失敗すること', async () => {
-  await agent(webApp)
-    .get('/profile')
-    .expect(401)
+describe('get /login', () => {
+  it('アクセスできること', async () => {
+    const res = await agent(webApp)
+      .get('/login')
+      .expect(200)
+
+    expect(res.text).toContain('<h2>ログイン</h2>')
+  })
 })
 
-it('ログインできること', async () => {
-  const user = await models.user.findOne()
-  await agent(webApp)
-    .post('/sessions')
-    .send({
-      email: user.email,
-      password: 'password'
-    })
-    .expect(302)
+describe('post /sessions', () => {
+  it('ログインできること', async () => {
+    const user = await models.user.findOne()
+
+    const request = agent(webApp)
+    {
+      const res = await request
+        .post('/sessions')
+        .send({
+          email: user.email,
+          password: 'password'
+        })
+        .expect(302)
+    
+      expect(res.headers.location).toMatch('/')
+    }
+
+    {
+      const res = await request.get('/').expect(200)
+      expect(res.text).toContain('ログイン成功しました')
+    }
+  })
 })
 
-describe('ログイン済みの場合', () => {
-  let _agent
-  let _user
+describe('delete /sessions', () => {
+  let request
 
   beforeEach(async (done) => {
-    _agent = agent(webApp)
+    request = agent(webApp)
 
-    _user = await models.user.findOne()
-    await login(_agent, _user)
+    const user = await models.user.findOne()
+    await login(request, user)
     done()
   })
 
-  test('ユーザ専用ページにアクセスできること', async () => {
-    const res = await _agent
-      .get('/profile')
-      .expect(200)
-
-    expect(res.text).toContain(_user.email) // ページはユーザーのemailを含む
-    expect(res.text).toContain(_user.nickName) // ページはユーザーのnickNameを含む
+  it('ログアウトできること', async () => {
+    await request
+      .delete('/sessions')
+      .expect(302)
   })
 })
 
+describe('get /profile', () => { 
+  describe('ログイン前の場合', () => {
+    it('アクセスすると失敗すること', async () => {
+      await agent(webApp)
+        .get('/profile')
+        .expect(401)
+    })
+  })
+
+  describe('ログイン済みの場合', () => {
+    let request
+    let user
+  
+    beforeEach(async (done) => {
+      request = agent(webApp)
+  
+      user = await models.user.findOne()
+      await login(request, user)
+      done()
+    })
+  
+    test('ユーザ専用ページにアクセスできること', async () => {
+      const res = await request
+        .get('/profile')
+        .expect(200)
+  
+      expect(res.text).toContain(user.email) // ページはユーザーのemailを含む
+      expect(res.text).toContain(user.nickName) // ページはユーザーのnickNameを含む
+    })
+  })
+})

@@ -41,13 +41,8 @@ const show = async ctx => {
 }
 
 const destroy = async (ctx, next) => {
-  const currentUser = ctx.state.currentUser
-  if(currentUser) {
-    await currentUser.destroy()
-  }
-
-  ctx.session = {};
-  await ctx.regenerateSession();
+  ctx.session = {}
+  await ctx.regenerateSession()
   ctx.flash = { info: 'ログアウトしました' }
   ctx.redirect('/login')
 }

@@ -2,19 +2,16 @@ const supertest = require('supertest')
 const { dummyTokenName } = require('../../lib/middlewares/csrf-token')
 
 async function login(agent, user) {
-  return new Promise((resolve, reject)=>{
-    agent
-      .post('/sessions')
-      .send({
-        email: user.email,
-        password: 'password'
-      })
-      .expect(302)
-      .end((err, ret)=>{
-        if(err) { reject(err) }
-        else { resolve(ret) }
-      })
-  })
+  if (!agent) { throw new Error('agent required') }
+  if (!user) { throw new Error('user required') }
+
+  return await agent
+    .post('/sessions')
+    .send({
+      email: user.email,
+      password: 'password'
+    })
+    .expect(302)
 }
 
 function agent(webApp, { csrfToken } = { csrfToken: dummyTokenName }) {
