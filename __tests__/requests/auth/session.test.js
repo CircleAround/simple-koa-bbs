@@ -1,13 +1,12 @@
-const supertest = require('supertest')
 const web = require("../../../web.js")
 const models = require('../../../app/models')
 const userFixtures = require('../../../tests/fixtures/user')
 const refleshModels = require('../../../tests/support/reflesh_models')
 const { dispose } = require('../../../lib/platform')
-const { enabled } = require('../../../lib/middlewares/csrf-token')
-const { login } = require('../../../tests/support/request_helper')
+const { fixToken } = require('../../../lib/middlewares/csrf-token')
+const { login, agent } = require('../../../tests/support/request_helper')
 
-enabled(false) // disable csrf-token check
+fixToken('dummyToken')
  
 let webApp
  
@@ -26,16 +25,17 @@ afterAll(async (done) => {
 })
 
 it('ログイン前にアクセスすると失敗すること', (done) => {
-  supertest.agent(webApp).get('/profile')
+  agent(webApp).get('/profile')
     .expect(401)
     .end(done)
 })
 
 it('ログインできること', async (done) => {
   const user = await models.user.findOne()
-  supertest.agent(webApp)
+  agent(webApp)
     .post('/sessions')
     .send({
+      _token: 'dummyToken',
       email: user.email,
       password: 'password'
     })
@@ -44,18 +44,18 @@ it('ログインできること', async (done) => {
 })
 
 describe('ログイン済みの場合', () => {
-  let agent
+  let _agent
 
   beforeEach(async (done)=>{
-    agent = supertest.agent(webApp)
+    _agent = agent(webApp)
 
     const user = await models.user.findOne()
-    await login(agent, user)
+    await login(_agent, user)
     done()
   })
 
   test('ユーザ専用ページにアクセスできること', (done) => {
-    agent
+    _agent
       .get('/profile')
       .expect(200)
       .end(done)

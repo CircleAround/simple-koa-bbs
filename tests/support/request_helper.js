@@ -1,3 +1,5 @@
+const supertest = require('supertest')
+
 async function login(agent, user) {
   return new Promise((resolve, reject)=>{
     agent
@@ -14,4 +16,9 @@ async function login(agent, user) {
   })
 }
 
-module.exports = { login }
+function agent(webApp, { csrfToken } = { csrfToken: 'dummyToken' }) {
+  return supertest.agent(webApp)
+    .set('x-csrf-token', csrfToken)
+}
+
+module.exports = { login, agent }
