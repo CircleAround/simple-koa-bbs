@@ -1,4 +1,5 @@
 const supertest = require('supertest')
+const { dummyTokenName } = require('../../lib/middlewares/csrf-token')
 
 async function login(agent, user) {
   return new Promise((resolve, reject)=>{
@@ -16,7 +17,7 @@ async function login(agent, user) {
   })
 }
 
-function agent(webApp, { csrfToken } = { csrfToken: 'dummyToken' }) {
+function agent(webApp, { csrfToken } = { csrfToken: dummyTokenName }) {
   return supertest.agent(webApp)
     .set('x-csrf-token', csrfToken)
 }
