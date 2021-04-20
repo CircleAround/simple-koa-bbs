@@ -34,7 +34,8 @@ const create = async ctx => {
 const show = async ctx => {
   const currentUser = ctx.state.currentUser
   if(!currentUser) {
-    ctx.response.status = 401
+    ctx.flash = { info: 'ログインしてください' }
+    ctx.redirect('/login')
     return
   }
   await ctx.render('auth/sessions/show')

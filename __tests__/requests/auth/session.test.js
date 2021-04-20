@@ -78,10 +78,12 @@ describe('delete /sessions', () => {
 
 describe('get /profile', () => { 
   describe('ログイン前の場合', () => {
-    it('アクセスすると失敗すること', async () => {
-      await agent(webApp)
+    it('アクセスするとログイン画面へリダイレクトすること', async () => {
+      const res = await agent(webApp)
         .get('/profile')
-        .expect(401)
+        .expect(302)
+
+      expect(res.headers.location).toMatch('/login')  
     })
   })
 
