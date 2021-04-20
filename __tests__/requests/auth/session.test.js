@@ -24,15 +24,15 @@ afterAll(async (done) => {
   done()
 })
 
-it('ログイン前にアクセスすると失敗すること', (done) => {
-  agent(webApp).get('/profile')
+it('ログイン前にアクセスすると失敗すること', async () => {
+  await agent(webApp)
+    .get('/profile')
     .expect(401)
-    .end(done)
 })
 
-it('ログインできること', async (done) => {
+it('ログインできること', async () => {
   const user = await models.user.findOne()
-  agent(webApp)
+  await agent(webApp)
     .post('/sessions')
     .send({
       _token: 'dummyToken',
@@ -40,7 +40,6 @@ it('ログインできること', async (done) => {
       password: 'password'
     })
     .expect(302)
-    .end(done)
 })
 
 describe('ログイン済みの場合', () => {
@@ -54,11 +53,10 @@ describe('ログイン済みの場合', () => {
     done()
   })
 
-  test('ユーザ専用ページにアクセスできること', (done) => {
-    _agent
+  test('ユーザ専用ページにアクセスできること', async () => {
+    await _agent
       .get('/profile')
       .expect(200)
-      .end(done)
   })
 })
 
