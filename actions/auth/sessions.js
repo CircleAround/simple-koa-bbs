@@ -32,11 +32,16 @@ const create = async ctx => {
 }
 
 const show = async ctx => {
+  const currentUser = ctx.state.currentUser
+  if(!currentUser) {
+    ctx.response.status = 401
+    return
+  }
   await ctx.render('auth/sessions/show')
 }
 
 const destroy = async (ctx, next) => {
-  const currentUser = ctx.currentUser
+  const currentUser = ctx.state.currentUser
   if(currentUser) {
     await currentUser.destroy()
   }

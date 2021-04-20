@@ -4,7 +4,7 @@ const logger = require('koa-logger')
 const bodyParser = require('koa-bodyparser')
 const flash = require('koa-flash')
 const override = require('koa-override')
-const csrfToken = require('../lib/middlewares/csrf-token')
+const { csrfToken } = require('../lib/middlewares/csrf-token')
 
 function useSession(app) {
   const session = require('koa-generic-session')

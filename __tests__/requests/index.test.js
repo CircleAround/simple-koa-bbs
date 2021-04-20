@@ -10,12 +10,7 @@ beforeAll(async (done)=>{
   await refleshModels(['user', 'post'])
 
   webApp = await web()
-
-  await userFixtures.createWithPosts({
-    nickName: 'testuser',
-    email: 'test@example.com',
-    password: 'password'
-  })
+  await userFixtures.createWithPosts()
   
   done()
 })
@@ -26,13 +21,10 @@ afterAll(async (done) => {
   done()
 })
 
-describe("Test the root path", () => {
-  test("It should response the GET method", done => {
-    request(webApp)
-      .get("/")
-      .then(response => {
-        expect(response.statusCode).toBe(200)
-        done()
-      });
+describe("/", () => {
+  test("GETが成功すること", async done => {
+    const response = await request(webApp).get("/")
+    expect(response.statusCode).toBe(200)
+    done()
   });
 });
