@@ -1,6 +1,8 @@
-const repl = require('repl')
 const boot = require('./config/boot')
 boot()
+
+const debug = require('debug')('platform:console')
+const repl = require('repl')
 
 const app = require('./app/')
 const fs = require('fs')
@@ -8,18 +10,18 @@ const fs = require('fs')
 const initializer = require('./config/initializer')
 initializer().then(()=>{
   function initContext(context) {
-    console.log('loading app features...')
+    debug('loading app features...')
     for(const key of Object.keys(app)) {
-      console.log(`> "${key}" loaded on global`)
+      debug(`> "${key}" loaded on global`)
       context[key] = app[key]
     }
     context.app = app
-    console.log('> app features loaded!\n')
+    debug('> app features loaded!\n')
 
     replServer.displayPrompt(true)
   }
 
-  const replServer = repl.start({useColors: true, })
+  const replServer = repl.start({useColors: true})
   replServer.on('reset', initContext)
   enableHistory(replServer)
 
@@ -32,7 +34,7 @@ function enableHistory(replServer) {
   if (!fs.existsSync(replHistoryPath)) {
     fs.writeFile(replHistoryPath, '', (err) => {
       if(err) { 
-        console.log(err.stack)
+        debug(err.stack)
         throw err
       }
     });
@@ -46,7 +48,7 @@ function enableHistory(replServer) {
   
   replServer.on('exit', () => {
     fs.writeFile(replHistoryPath, replServer.history.join('\n'), err => {
-      console.log(err)
+      console.error(err)
       process.exit();
     })
   });  

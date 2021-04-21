@@ -1,3 +1,5 @@
+const debug = require('debug')('platform:extension:mail')
+
 const ex = module.exports = {}
 
 const nodemailer = require("nodemailer")
@@ -37,7 +39,7 @@ class MockSender {
 
   #sentLog = []
   sendMail(params) {
-    console.log(`MockSender#sendMail: ${JSON.stringify(params)}`)
+    debug(`MockSender#sendMail: ${JSON.stringify(params)}`)
 
     const log = {
       params,

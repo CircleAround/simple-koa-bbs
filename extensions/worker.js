@@ -1,3 +1,4 @@
+const debug = require('debug')('platform:extension:worker')
 const EventEmitter = require('events')
 
 const Queue = require('bull')
@@ -52,7 +53,7 @@ class WorkerExtension {
         const globalOptions = options
         const queueNames = Object.keys(queueOptions)
         queueNames.forEach((queueName) => {
-          console.log(`create queue: ${queueName}`)
+          debug(`create queue: ${queueName}`)
 
           let queueOption = queueOptions[queueName] || {}
           queueOption = { ...globalOptions, ...queueOption }
@@ -64,7 +65,7 @@ class WorkerExtension {
           })
 
           queue.on('completed', async (job, actionId) => {
-            console.log(`Job completed with result Queue: ${queueName} job.id: ${job.id}; actionId: ${actionId}`);
+            debug(`Job completed with result Queue: ${queueName} job.id: ${job.id}; actionId: ${actionId}`);
           })
           queue.on("failed", (job, err) => {
             console.error(`Queue failed: ${queueName}`)
@@ -128,10 +129,10 @@ class WorkerExtension {
       })
 
       if(job.data.args instanceof Array) {
-        console.log(`call ${moduleName}.${methodName}(${job.data.args.map(arg=>JSON.stringify(arg)).join(',')})`)
+        debug(`call ${moduleName}.${methodName}(${job.data.args.map(arg=>JSON.stringify(arg)).join(',')})`)
         await method.apply(undefined, job.data.args)
       } else {
-        console.log(`call ${moduleName}.${methodName}(${JSON.stringify(job.data.args)})`)
+        debug(`call ${moduleName}.${methodName}(${JSON.stringify(job.data.args)})`)
         await method(job.data.args)
       }
     }
