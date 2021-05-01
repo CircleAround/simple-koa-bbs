@@ -8,10 +8,10 @@ const app = require('./app/')
 const fs = require('fs')
 
 const initializer = require('./config/initializer')
-initializer().then(()=>{
+initializer().then(() => {
   function initContext(context) {
     debug('loading app features...')
-    for(const key of Object.keys(app)) {
+    for (const key of Object.keys(app)) {
       debug(`> "${key}" loaded on global`)
       context[key] = app[key]
     }
@@ -21,7 +21,7 @@ initializer().then(()=>{
     replServer.displayPrompt(true)
   }
 
-  const replServer = repl.start({useColors: true})
+  const replServer = repl.start({ useColors: true })
   replServer.on('reset', initContext)
   enableHistory(replServer)
 
@@ -33,11 +33,11 @@ function enableHistory(replServer) {
   const replHistoryPath = `${process.env.HOME}/.node_repl_history`
   if (!fs.existsSync(replHistoryPath)) {
     fs.writeFile(replHistoryPath, '', (err) => {
-      if(err) { 
+      if (err) {
         debug(err.stack)
         throw err
       }
-    });
+    })
   }
 
   fs.readFile(replHistoryPath, 'utf8', (err, data) =>
@@ -45,11 +45,11 @@ function enableHistory(replServer) {
       replServer.history.push(command)
     )
   )
-  
+
   replServer.on('exit', () => {
     fs.writeFile(replHistoryPath, replServer.history.join('\n'), err => {
       console.error(err)
-      process.exit();
+      process.exit()
     })
-  });  
+  })
 }

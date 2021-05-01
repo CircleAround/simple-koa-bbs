@@ -11,7 +11,8 @@
     "dev": "bin/serv",
     "reset": "bin/db/reset",
     "console": "node --experimental-repl-await console.js",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "lint": "npx eslint . "
   },
   "author": "",
   "license": "ISC",
@@ -51,6 +52,7 @@
   "devDependencies": {
     "@ms2sato/maildev": "^1.1.0",
     "dotenv": "^8.2.0",
+    "eslint-plugin-jest": "^24.3.5",
     "foreman": "^3.0.1",
     "jest": "^26.6.3",
     "nodemon": "^2.0.7",
