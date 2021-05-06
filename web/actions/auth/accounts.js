@@ -1,6 +1,6 @@
-const workers = require('../../app/workers')
+const workers = require('../../../app/workers')
 const { ValidationError } = require('sequelize')
-const db = require('../../app/models')
+const db = require('../../../app/models')
 const User = db.user
 const UserConfirmation = db.userConfirmation
 
@@ -32,10 +32,10 @@ const create = async ctx => {
 
 const confirm = async ctx => {
   const { token } = ctx.request.query
-  if(!token || token.length === 0) { throw new Error('Invalid Access') } // TODO: 403エラーを作る
+  if (!token || token.length === 0) { throw new Error('Invalid Access') } // TODO: 403エラーを作る
 
   const userConfirmation = await UserConfirmation.findOne({ where: { token: token } })
-  if(!userConfirmation) {
+  if (!userConfirmation) {
     throw new Error('Invalid token') // TODO: エラー対応ちゃんとやる
   }
 

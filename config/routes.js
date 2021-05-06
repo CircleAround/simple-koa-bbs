@@ -1,6 +1,6 @@
-const posts = require('../actions/posts')
-const accounts = require('../actions/auth/accounts')
-const sessions = require('../actions/auth/sessions')
+const posts = require('../web/actions/posts')
+const accounts = require('../web/actions/auth/accounts')
+const sessions = require('../web/actions/auth/sessions')
 
 module.exports = async (router) => {
   router
