@@ -1,4 +1,4 @@
-const web = require("../../web")
+const web = require("../../web.js")
 const workers = require('../../app/workers')
 const mailers = require('../../app/mailers')
 const models = require('../../app/models')

@@ -51,7 +51,7 @@ function useLocale(app) {
 
 module.exports = async (app) => {
   views(app, {
-    root: path.join(__dirname, '../views'),
+    root: path.join(__dirname, '../web/views'),
     viewExt: 'ejs',
     layout: false,
     cache: false,
@@ -64,7 +64,7 @@ module.exports = async (app) => {
 
   app
     .use(logger())
-    .use(require('koa-static')(path.join(__dirname, '../public')))
+    .use(require('koa-static')(path.join(__dirname, '../web/public')))
     .use(flash())
     .use(async (ctx, next) => {
       ctx.state.flash = ctx.flash || {}

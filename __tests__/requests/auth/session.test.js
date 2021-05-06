@@ -9,7 +9,7 @@ const { login, agent } = require('../../../tests/support/request_helper')
 let webApp
 
 beforeAll(async (done) => {
-  await refleshModels(['user', 'userConfirmation'])
+  await refleshModels(['user', 'userConfirmation', 'post'])
   await userFixtures.create()
 
   webApp = await web()
@@ -47,7 +47,7 @@ describe('post /sessions', () => {
           password: 'password'
         })
         .expect(302)
-    
+
       expect(res.headers.location).toMatch('/')
     }
 
@@ -76,34 +76,34 @@ describe('delete /sessions', () => {
   })
 })
 
-describe('get /profile', () => { 
+describe('get /profile', () => {
   describe('ログイン前の場合', () => {
     it('アクセスするとログイン画面へリダイレクトすること', async () => {
       const res = await agent(webApp)
         .get('/profile')
         .expect(302)
 
-      expect(res.headers.location).toMatch('/login')  
+      expect(res.headers.location).toMatch('/login')
     })
   })
 
   describe('ログイン済みの場合', () => {
     let request
     let user
-  
+
     beforeEach(async (done) => {
       request = agent(webApp)
-  
+
       user = await models.user.findOne()
       await login(request, user)
       done()
     })
-  
+
     test('ユーザ専用ページにアクセスできること', async () => {
       const res = await request
         .get('/profile')
         .expect(200)
-  
+
       expect(res.text).toContain(user.email) // ページはユーザーのemailを含む
       expect(res.text).toContain(user.nickName) // ページはユーザーのnickNameを含む
     })

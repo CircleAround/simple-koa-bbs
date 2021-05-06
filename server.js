@@ -1,4 +1,4 @@
-const web = require('./web')
+const web = require('./web.js')
 
 const port = process.env.PORT || 3000
 

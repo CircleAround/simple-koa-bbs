@@ -1,6 +1,6 @@
 const {DataTypes, ValidationError} = require('sequelize')
-const db = require('../../app/models/')
-const Authenticator = require('../../app/models/user/authenticator')(db.sequelize, DataTypes)
+const db = require('../../../app/models/')
+const Authenticator = require('../../../app/models/user/authenticator')(db.sequelize, DataTypes)
 const User = db.user
 
 const renderIndex = async (ctx, params = {}, error = null) => {
